@@ -1,0 +1,414 @@
+basePath: /v1
+definitions:
+  article.ArticleData:
+    properties:
+      _id:
+        type: string
+      description:
+        type: string
+      enabled:
+        type: boolean
+      image:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+    type: object
+  article.NewArticleData:
+    properties:
+      description:
+        maxLength: 256
+        minLength: 1
+        type: string
+      image:
+        maxLength: 100
+        type: string
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      price:
+        minimum: 1
+        type: number
+      stock:
+        minimum: 1
+        type: integer
+    required:
+    - description
+    - name
+    - price
+    - stock
+    type: object
+  errors.ErrCustom:
+    properties:
+      error:
+        type: string
+    type: object
+  errors.ErrField:
+    properties:
+      message:
+        type: string
+      path:
+        type: string
+    type: object
+  errors.ErrValidation:
+    properties:
+      messages:
+        items:
+          $ref: '#/definitions/errors.ErrField'
+        type: array
+    type: object
+  r_consume.LogoutMessage:
+    properties:
+      message:
+        type: string
+      type:
+        type: string
+    type: object
+  service.ConsumeArticleValidation:
+    properties:
+      exchange:
+        type: string
+      message:
+        $ref: '#/definitions/service.ConsumeArticleValidationMessage'
+      queue:
+        type: string
+      type:
+        type: string
+      version:
+        type: integer
+    type: object
+  service.ConsumeArticleValidationMessage:
+    properties:
+      articleId:
+        type: string
+      referenceId:
+        type: string
+    type: object
+  service.ConsumeOrderPlacedArticle:
+    properties:
+      articleId:
+        type: string
+      quantity:
+        type: integer
+    type: object
+  service.ConsumeOrderPlacedMessage:
+    properties:
+      articles:
+        items:
+          $ref: '#/definitions/service.ConsumeOrderPlacedArticle'
+        type: array
+      cartId:
+        type: integer
+      orderId:
+        type: string
+    type: object
+  service.EmitArticleValidation:
+    properties:
+      articleId:
+        type: string
+      price:
+        type: number
+      referenceId:
+        type: string
+      stock:
+        type: integer
+      valid:
+        type: boolean
+    type: object
+host: localhost:3002
+info:
+  contact:
+    email: nmarsollier@gmail.com
+    name: Nestor Marsollier
+  description: Microservicio de Catalogo.
+  title: CatalogGo
+  version: "1.0"
+paths:
+  /rabbit/article-data:
+    get:
+      consumes:
+      - application/json
+      description: Antes de iniciar las operaciones se validan los artículos contra
+        el catalogo.
+      parameters:
+      - description: Message para Type = article-data
+        in: body
+        name: article-data
+        required: true
+        schema:
+          $ref: '#/definitions/service.ConsumeArticleValidation'
+      produces:
+      - application/json
+      responses: {}
+      summary: Mensage Rabbit article-data o article-exist
+      tags:
+      - Rabbit
+    put:
+      consumes:
+      - application/json
+      description: Emite respuestas de article-data or article-exist
+      parameters:
+      - description: Estructura general del mensage
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.EmitArticleValidation'
+      produces:
+      - application/json
+      responses: {}
+      summary: Mensage Rabbit
+      tags:
+      - Rabbit
+  /rabbit/logout:
+    get:
+      consumes:
+      - application/json
+      description: Escucha de mensajes logout desde auth.
+      parameters:
+      - description: Estructura general del mensage
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/r_consume.LogoutMessage'
+      produces:
+      - application/json
+      responses: {}
+      summary: Mensage Rabbit
+      tags:
+      - Rabbit
+  /rabbit/order-placed:
+    get:
+      consumes:
+      - application/json
+      description: Antes de iniciar las operaciones se validan los artículos contra
+        el catalogo.
+      parameters:
+      - description: Message para Type = article-data
+        in: body
+        name: article-data
+        required: true
+        schema:
+          $ref: '#/definitions/service.ConsumeOrderPlacedMessage'
+      produces:
+      - application/json
+      responses: {}
+      summary: Mensage Rabbit order/order-placed
+      tags:
+      - Rabbit
+  /v1/articles:
+    post:
+      consumes:
+      - application/json
+      description: Crear Artículo
+      parameters:
+      - description: bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Informacion del articulo
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/article.NewArticleData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Articulo
+          schema:
+            $ref: '#/definitions/article.ArticleData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrValidation'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+      summary: Crear Artículo
+      tags:
+      - Catalogo
+  /v1/articles/:articleId:
+    delete:
+      consumes:
+      - application/json
+      description: Eliminar Artículo
+      parameters:
+      - description: bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID de articlo
+        in: path
+        name: articleId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrValidation'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+      summary: Eliminar Artículo
+      tags:
+      - Catalogo
+    get:
+      consumes:
+      - application/json
+      description: Obtener un articulo
+      parameters:
+      - description: bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID de articlo
+        in: path
+        name: articleId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Articulo
+          schema:
+            $ref: '#/definitions/article.ArticleData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrValidation'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+      summary: Obtener un articulo
+      tags:
+      - Catalogo
+    post:
+      consumes:
+      - application/json
+      description: Actualizar Artículo
+      parameters:
+      - description: bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Informacion del articulo
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/article.NewArticleData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Articulo
+          schema:
+            $ref: '#/definitions/article.ArticleData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrValidation'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+      summary: Actualizar Artículo
+      tags:
+      - Catalogo
+  /v1/articles/search/:criteria:
+    get:
+      consumes:
+      - application/json
+      description: Obtener un articulo
+      parameters:
+      - description: bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID de articlo
+        in: path
+        name: articleId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Articulos
+          schema:
+            items:
+              $ref: '#/definitions/article.ArticleData'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors.ErrValidation'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrCustom'
+      summary: Obtener un articulo
+      tags:
+      - Catalogo
+swagger: "2.0"
