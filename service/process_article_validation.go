@@ -1,8 +1,7 @@
 package service
 
 import (
-	"log"
-
+	"github.com/golang/glog"
 	"github.com/nmarsollier/cataloggo/article"
 	"github.com/nmarsollier/cataloggo/rabbit/r_emit"
 	"github.com/nmarsollier/cataloggo/tools"
@@ -44,7 +43,7 @@ func ProcessArticleData(data *ConsumeArticleValidation) {
 	}
 	r_emit.EmitDirect(data.Exchange, data.Queue, response)
 
-	log.Print("Article validation completed : " + tools.ToJson(data))
+	glog.Info("Article validation completed : ", tools.ToJson(data))
 }
 
 type EmitArticleValidation struct {

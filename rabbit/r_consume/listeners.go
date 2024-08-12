@@ -1,8 +1,9 @@
 package r_consume
 
 import (
-	"log"
 	"time"
+
+	"github.com/golang/glog"
 )
 
 func Init() {
@@ -10,9 +11,9 @@ func Init() {
 		for {
 			err := consumeOrders()
 			if err != nil {
-				log.Print(err)
+				glog.Error(err)
 			}
-			log.Print("RabbitMQ consumeOrders conectando en 5 segundos.")
+			glog.Info("RabbitMQ consumeOrders conectando en 5 segundos.")
 			time.Sleep(5 * time.Second)
 		}
 	}()
@@ -20,9 +21,9 @@ func Init() {
 		for {
 			err := consumeOrderPlaced()
 			if err != nil {
-				log.Print(err)
+				glog.Error(err)
 			}
-			log.Print("RabbitMQ consumeOrderPlaced conectando en 5 segundos.")
+			glog.Info("RabbitMQ consumeOrderPlaced conectando en 5 segundos.")
 			time.Sleep(5 * time.Second)
 		}
 	}()
@@ -30,9 +31,9 @@ func Init() {
 		for {
 			err := consumeLogout()
 			if err != nil {
-				log.Print(err)
+				glog.Error(err)
 			}
-			log.Print("RabbitMQ listenLogout conectando en 5 segundos.")
+			glog.Info("RabbitMQ listenLogout conectando en 5 segundos.")
 			time.Sleep(5 * time.Second)
 		}
 	}()

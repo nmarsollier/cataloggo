@@ -1,4 +1,4 @@
-package errors
+package apperr
 
 import (
 	"encoding/json"
@@ -18,6 +18,9 @@ var AccessLevel = NewCustom(401, "Accesos Insuficientes")
 
 // NotFound cuando un registro no se encuentra en la db
 var NotFound = NewCustom(404, "Document not found")
+
+// NotFound cuando un registro no se encuentra en la db
+var Invalid = NewCustom(400, "Document Invalid")
 
 // AlreadyExist cuando no se puede ingresar un registro a la db
 var AlreadyExist = NewCustom(400, "Already exist")

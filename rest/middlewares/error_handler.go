@@ -5,13 +5,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator"
-	"github.com/nmarsollier/cataloggo/tools/errors"
+	"github.com/nmarsollier/cataloggo/tools/apperr"
 )
 
 // ErrorHandler a middleware to handle errors
 func ErrorHandler(c *gin.Context) {
 	c.Next()
-
 	handleErrorIfNeeded(c)
 }
 
@@ -38,10 +37,10 @@ func handleErrorIfNeeded(c *gin.Context) {
 func handleError(c *gin.Context, err interface{}) {
 	// Compruebo tipos de errores conocidos
 	switch value := err.(type) {
-	case errors.Custom:
+	case apperr.Custom:
 		// Son validaciones hechas con NewCustom
 		handleCustom(c, value)
-	case errors.Validation:
+	case apperr.Validation:
 		// Son validaciones hechas con NewValidation
 		c.JSON(400, err)
 	case validator.ValidationErrors:
@@ -54,7 +53,7 @@ func handleError(c *gin.Context, err interface{}) {
 		})
 	default:
 		// No se sabe que es, devolvemos internal
-		handleCustom(c, errors.Internal)
+		handleCustom(c, apperr.Internal)
 	}
 }
 
@@ -74,7 +73,7 @@ func handleError(c *gin.Context, err interface{}) {
  *     }
  */
 func handleValidationError(c *gin.Context, validationErrors validator.ValidationErrors) {
-	err := errors.NewValidation()
+	err := apperr.NewValidation()
 
 	for _, e := range validationErrors {
 		err.Add(strings.ToLower(e.Field()), e.Tag())
@@ -93,6 +92,6 @@ func handleValidationError(c *gin.Context, validationErrors validator.Validation
  *     }
  *
  */
-func handleCustom(c *gin.Context, err errors.Custom) {
+func handleCustom(c *gin.Context, err apperr.Custom) {
 	c.JSON(err.Status(), err)
 }

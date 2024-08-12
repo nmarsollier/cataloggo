@@ -2,8 +2,8 @@ package r_consume
 
 import (
 	"encoding/json"
-	"log"
 
+	"github.com/golang/glog"
 	"github.com/nmarsollier/cataloggo/service"
 	"github.com/nmarsollier/cataloggo/tools/env"
 	"github.com/streadway/amqp"
@@ -18,6 +18,7 @@ func consumeOrderPlaced() error {
 
 	chn, err := conn.Channel()
 	if err != nil {
+		glog.Error(err)
 		return err
 	}
 	defer chn.Close()
@@ -32,6 +33,7 @@ func consumeOrderPlaced() error {
 		nil,            // arguments
 	)
 	if err != nil {
+		glog.Error(err)
 		return err
 	}
 
@@ -44,6 +46,7 @@ func consumeOrderPlaced() error {
 		nil,                 // arguments
 	)
 	if err != nil {
+		glog.Error(err)
 		return err
 	}
 
@@ -54,6 +57,7 @@ func consumeOrderPlaced() error {
 		false,
 		nil)
 	if err != nil {
+		glog.Error(err)
 		return err
 	}
 
@@ -67,34 +71,37 @@ func consumeOrderPlaced() error {
 		nil,        // args
 	)
 	if err != nil {
+		glog.Error(err)
 		return err
 	}
 
-	log.Print("RabbitMQ consumeOrderPlaced conectado")
+	glog.Info("RabbitMQ consumeOrderPlaced conectado")
 
 	go func() {
 		for d := range mgs {
 			newMessage := &ConsumeMessage{}
 			body := d.Body
+			glog.Info("Rannit Consumed : ", string(body))
 
-			log.Print(string(body))
 			err = json.Unmarshal(body, newMessage)
 			if err == nil {
 				switch newMessage.Type {
 				case "order-placed":
 					articleMessage := &service.ConsumeOrderPlaced{}
 					if err := json.Unmarshal(body, articleMessage); err != nil {
-						log.Print("Error decoding Placed Data")
+						glog.Error(err)
 						return
 					}
 
 					service.ProcessOrderPlaced(articleMessage)
 				}
+			} else {
+				glog.Error(err)
 			}
 		}
 	}()
 
-	log.Print("Closed connection: ", <-conn.NotifyClose(make(chan *amqp.Error)))
+	glog.Info("Closed connection: ", <-conn.NotifyClose(make(chan *amqp.Error)))
 
 	return nil
 }

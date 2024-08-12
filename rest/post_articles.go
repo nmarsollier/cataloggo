@@ -7,22 +7,22 @@ import (
 	"github.com/nmarsollier/cataloggo/rest/middlewares"
 )
 
-//	 Crear Artículo
+//	Crear Artículo
 //
-//	@Summary		Crear Artículo
-//	@Description	Crear Artículo
-//	@Tags			Catalogo
-//	@Accept			json
-//	@Produce		json
-//	@Param			Authorization	header		string					true	"bearer {token}"
-//	@Param			body			body		article.NewArticleData	true	"Informacion del articulo"
-//	@Success		200				{object}	article.ArticleData		"Articulo"
-//	@Failure		400				{object}	errors.ErrValidation	"Bad Request"
-//	@Failure		401				{object}	errors.ErrCustom		"Unauthorized"
-//	@Failure		404				{object}	errors.ErrCustom		"Not Found"
-//	@Failure		500				{object}	errors.ErrCustom		"Internal Server Error"
+// @Summary		Crear Artículo
+// @Description	Crear Artículo
+// @Tags			Catalogo
+// @Accept			json
+// @Produce		json
+// @Param			Authorization	header		string					true	"bearer {token}"
+// @Param			body			body		article.NewArticleData	true	"Informacion del articulo"
+// @Success		200				{object}	article.ArticleData		"Articulo"
+// @Failure		400				{object}	apperr.ErrValidation	"Bad Request"
+// @Failure		401				{object}	apperr.ErrCustom		"Unauthorized"
+// @Failure		404				{object}	apperr.ErrCustom		"Not Found"
+// @Failure		500				{object}	apperr.ErrCustom		"Internal Server Error"
 //
-//	@Router			/v1/articles [post]
+// @Router			/v1/articles [post]
 func init() {
 	engine.Router().POST(
 		"/v1/articles",

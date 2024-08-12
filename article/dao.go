@@ -2,10 +2,10 @@ package article
 
 import (
 	"context"
-	"log"
 
+	"github.com/golang/glog"
+	"github.com/nmarsollier/cataloggo/tools/apperr"
 	"github.com/nmarsollier/cataloggo/tools/db"
-	"github.com/nmarsollier/cataloggo/tools/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -21,6 +21,8 @@ func dbCollection() (*mongo.Collection, error) {
 
 	database, err := db.Get()
 	if err != nil {
+		glog.Error(err)
+
 		return nil, err
 	}
 
@@ -33,6 +35,8 @@ func dbCollection() (*mongo.Collection, error) {
 func findByCriteria(criteria string) ([]*Article, error) {
 	var collection, err = dbCollection()
 	if err != nil {
+		glog.Error(err)
+
 		return nil, err
 	}
 
@@ -45,6 +49,8 @@ func findByCriteria(criteria string) ([]*Article, error) {
 
 	cur, err := collection.Find(context.Background(), filter)
 	if err != nil {
+		glog.Error(err)
+
 		return nil, err
 	}
 	defer cur.Close(context.Background())
@@ -53,6 +59,8 @@ func findByCriteria(criteria string) ([]*Article, error) {
 	for cur.Next(context.Background()) {
 		article := &Article{}
 		if err := cur.Decode(article); err != nil {
+			glog.Error(err)
+
 			return nil, err
 		}
 		result = append(result, article)
@@ -64,18 +72,24 @@ func findByCriteria(criteria string) ([]*Article, error) {
 func findById(articleId string) (*Article, error) {
 	var collection, err = dbCollection()
 	if err != nil {
+		glog.Error(err)
+
 		return nil, err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		return nil, errors.ErrID
+		glog.Error(err)
+
+		return nil, apperr.ErrID
 	}
 
 	article := &Article{}
 	filter := bson.M{"_id": _id}
 
 	if err = collection.FindOne(context.Background(), filter).Decode(article); err != nil {
+		glog.Error(err)
+
 		return nil, err
 	}
 
@@ -84,19 +98,23 @@ func findById(articleId string) (*Article, error) {
 
 func insert(article *Article) (*Article, error) {
 	if err := article.ValidateSchema(); err != nil {
+		glog.Error(err)
+
 		return nil, err
 	}
 
 	var collection, err = dbCollection()
 	if err != nil {
+		glog.Error(err)
+
 		return nil, err
 	}
 
-	var re *mongo.InsertOneResult
-	if re, err = collection.InsertOne(context.Background(), article); err != nil {
+	if _, err = collection.InsertOne(context.Background(), article); err != nil {
+		glog.Error(err)
+
 		return nil, err
 	}
-	log.Print(re)
 
 	return article, nil
 }
@@ -105,12 +123,16 @@ func insert(article *Article) (*Article, error) {
 func Disable(articleId string) error {
 	var collection, err = dbCollection()
 	if err != nil {
+		glog.Error(err)
+
 		return err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		return errors.ErrID
+		glog.Error(err)
+
+		return apperr.ErrID
 	}
 
 	_, err = collection.UpdateOne(context.Background(),
@@ -127,12 +149,16 @@ func Disable(articleId string) error {
 func updateDescription(articleId string, description Description) error {
 	var collection, err = dbCollection()
 	if err != nil {
+		glog.Error(err)
+
 		return err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		return errors.ErrID
+		glog.Error(err)
+
+		return apperr.ErrID
 	}
 	_, err = collection.UpdateOne(context.Background(),
 		bson.M{"_id": _id},
@@ -148,12 +174,16 @@ func updateDescription(articleId string, description Description) error {
 func updatePrice(articleId string, price float32) error {
 	var collection, err = dbCollection()
 	if err != nil {
+		glog.Error(err)
+
 		return err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		return errors.ErrID
+		glog.Error(err)
+
+		return apperr.ErrID
 	}
 	_, err = collection.UpdateOne(context.Background(),
 		bson.M{"_id": _id},
@@ -169,12 +199,16 @@ func updatePrice(articleId string, price float32) error {
 func updateStock(articleId string, stock int) error {
 	var collection, err = dbCollection()
 	if err != nil {
+		glog.Error(err)
+
 		return err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		return errors.ErrID
+		glog.Error(err)
+
+		return apperr.ErrID
 	}
 	_, err = collection.UpdateOne(context.Background(),
 		bson.M{"_id": _id},
@@ -189,6 +223,8 @@ func updateStock(articleId string, stock int) error {
 func DecreaseStock(articleId primitive.ObjectID, stock int) error {
 	var collection, err = dbCollection()
 	if err != nil {
+		glog.Error(err)
+
 		return err
 	}
 

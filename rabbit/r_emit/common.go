@@ -2,28 +2,31 @@ package r_emit
 
 import (
 	"encoding/json"
-	"log"
 
+	"github.com/golang/glog"
 	"github.com/nmarsollier/cataloggo/tools"
+	"github.com/nmarsollier/cataloggo/tools/apperr"
 	"github.com/nmarsollier/cataloggo/tools/env"
-	"github.com/nmarsollier/cataloggo/tools/errors"
 	"github.com/streadway/amqp"
 )
 
 // ErrChannelNotInitialized Rabbit channel could not be initialized
-var ErrChannelNotInitialized = errors.NewCustom(400, "Channel not initialized")
+var ErrChannelNotInitialized = apperr.NewCustom(400, "Channel not initialized")
 
 func getChannel() (*amqp.Channel, error) {
 	conn, err := amqp.Dial(env.Get().RabbitURL)
 	if err != nil {
+		glog.Error(err)
 		return nil, err
 	}
 
 	ch, err := conn.Channel()
 	if err != nil {
+		glog.Error(err)
 		return nil, err
 	}
 	if ch == nil {
+		glog.Error(err)
 		return nil, ErrChannelNotInitialized
 	}
 	return ch, nil
@@ -43,6 +46,7 @@ func EmitDirect(exchange string, queue string, data interface{}) error {
 	chn, err := getChannel()
 	if err != nil {
 		chn = nil
+		glog.Error(err)
 		return err
 	}
 
@@ -57,11 +61,13 @@ func EmitDirect(exchange string, queue string, data interface{}) error {
 	)
 	if err != nil {
 		chn = nil
+		glog.Error(err)
 		return err
 	}
 
 	body, err := json.Marshal(data)
 	if err != nil {
+		glog.Error(err)
 		return err
 	}
 
@@ -75,10 +81,11 @@ func EmitDirect(exchange string, queue string, data interface{}) error {
 		})
 	if err != nil {
 		chn = nil
+		glog.Error(err)
 		return err
 	}
 
-	log.Output(1, "Rabbit enviado "+tools.ToJson(body))
+	glog.Info("Rabbit Sent : ", tools.ToJson(body))
 
 	return nil
 }

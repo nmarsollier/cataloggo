@@ -17,10 +17,10 @@ import (
 //	@Param			Authorization	header	string	true	"bearer {token}"
 //	@Param			articleId		path	string	true	"ID de articlo"
 //	@Success		200				"No Content"
-//	@Failure		400				{object}	errors.ErrValidation	"Bad Request"
-//	@Failure		401				{object}	errors.ErrCustom		"Unauthorized"
-//	@Failure		404				{object}	errors.ErrCustom		"Not Found"
-//	@Failure		500				{object}	errors.ErrCustom		"Internal Server Error"
+//	@Failure		400				{object}	apperr.ErrValidation	"Bad Request"
+//	@Failure		401				{object}	apperr.ErrCustom		"Unauthorized"
+//	@Failure		404				{object}	apperr.ErrCustom		"Not Found"
+//	@Failure		500				{object}	apperr.ErrCustom		"Internal Server Error"
 //
 //	@Router			/v1/articles/:articleId [delete]
 func init() {

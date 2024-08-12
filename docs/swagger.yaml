@@ -1,5 +1,24 @@
 basePath: /v1
 definitions:
+  apperr.ErrCustom:
+    properties:
+      error:
+        type: string
+    type: object
+  apperr.ErrField:
+    properties:
+      message:
+        type: string
+      path:
+        type: string
+    type: object
+  apperr.ErrValidation:
+    properties:
+      messages:
+        items:
+          $ref: '#/definitions/apperr.ErrField'
+        type: array
+    type: object
   article.ArticleData:
     properties:
       _id:
@@ -41,25 +60,6 @@ definitions:
     - name
     - price
     - stock
-    type: object
-  errors.ErrCustom:
-    properties:
-      error:
-        type: string
-    type: object
-  errors.ErrField:
-    properties:
-      message:
-        type: string
-      path:
-        type: string
-    type: object
-  errors.ErrValidation:
-    properties:
-      messages:
-        items:
-          $ref: '#/definitions/errors.ErrField'
-        type: array
     type: object
   r_consume.LogoutMessage:
     properties:
@@ -228,19 +228,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.ErrValidation'
+            $ref: '#/definitions/apperr.ErrValidation'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
       summary: Crear Artículo
       tags:
       - Catalogo
@@ -268,19 +268,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.ErrValidation'
+            $ref: '#/definitions/apperr.ErrValidation'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
       summary: Eliminar Artículo
       tags:
       - Catalogo
@@ -309,19 +309,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.ErrValidation'
+            $ref: '#/definitions/apperr.ErrValidation'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
       summary: Obtener un articulo
       tags:
       - Catalogo
@@ -351,19 +351,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.ErrValidation'
+            $ref: '#/definitions/apperr.ErrValidation'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
       summary: Actualizar Artículo
       tags:
       - Catalogo
@@ -395,19 +395,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.ErrValidation'
+            $ref: '#/definitions/apperr.ErrValidation'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errors.ErrCustom'
+            $ref: '#/definitions/apperr.ErrCustom'
       summary: Obtener un articulo
       tags:
       - Catalogo

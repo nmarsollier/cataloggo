@@ -1,8 +1,7 @@
 package service
 
 import (
-	"log"
-
+	"github.com/golang/glog"
 	"github.com/nmarsollier/cataloggo/article"
 	"github.com/nmarsollier/cataloggo/tools"
 )
@@ -25,7 +24,7 @@ func ProcessOrderPlaced(data *ConsumeOrderPlaced) {
 		}
 	}
 
-	log.Print("Order Placed processed : " + tools.ToJson(data))
+	glog.Info("Order Placed processed : ", tools.ToJson(data))
 }
 
 type ConsumeOrderPlaced struct {
