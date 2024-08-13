@@ -6,16 +6,15 @@ import (
 	"github.com/nmarsollier/cataloggo/tools"
 )
 
+// @Summary		Mensage Rabbit order/order-placed
+// @Description	Antes de iniciar las operaciones se validan los artículos contra el catalogo.
+// @Tags			Rabbit
+// @Accept			json
+// @Produce		json
+// @Param			article-data	body	ConsumeOrderPlacedMessage	true	"Message para Type = article-data"
+// @Router			/rabbit/order-placed [get]
+//
 // Consume Order Placed
-//
-//	@Summary		Mensage Rabbit order/order-placed
-//	@Description	Antes de iniciar las operaciones se validan los artículos contra el catalogo.
-//	@Tags			Rabbit
-//	@Accept			json
-//	@Produce		json
-//	@Param			article-data	body	ConsumeOrderPlacedMessage	true	"Message para Type = article-data"
-//
-//	@Router			/rabbit/order-placed [get]
 func ProcessOrderPlaced(data *ConsumeOrderPlaced) {
 	for _, a := range data.Message.Articles {
 		art, err := article.FindById(a.ArticleId)

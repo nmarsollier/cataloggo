@@ -6,19 +6,19 @@ import (
 	"github.com/nmarsollier/cataloggo/rest/engine"
 )
 
-//	@Summary		Obtener un articulo
-//	@Description	Obtener un articulo
-//	@Tags			Catalogo
-//	@Accept			json
-//	@Produce		json
-//	@Param			Authorization	header		string					true	"bearer {token}"
-//	@Param			articleId		path		string					true	"ID de articlo"
-//	@Success		200				{array}		article.ArticleData		"Articulos"
-//	@Failure		400				{object}	apperr.ValidationErr	"Bad Request"
-//	@Failure		401				{object}	engine.ErrorData		"Unauthorized"
-//	@Failure		404				{object}	engine.ErrorData		"Not Found"
-//	@Failure		500				{object}	engine.ErrorData		"Internal Server Error"
-//	@Router			/v1/articles/search/:criteria [get]
+// @Summary		Obtener un articulo
+// @Description	Obtener un articulo
+// @Tags			Catalogo
+// @Accept			json
+// @Produce		json
+// @Param			Authorization	header		string					true	"bearer {token}"
+// @Param			articleId		path		string					true	"ID de articlo"
+// @Success		200				{array}		article.ArticleData		"Articulos"
+// @Failure		400				{object}	apperr.ValidationErr	"Bad Request"
+// @Failure		401				{object}	engine.ErrorData		"Unauthorized"
+// @Failure		404				{object}	engine.ErrorData		"Not Found"
+// @Failure		500				{object}	engine.ErrorData		"Internal Server Error"
+// @Router			/v1/articles/search/:criteria [get]
 //
 // Obtener un articulo
 func init() {

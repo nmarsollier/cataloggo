@@ -20,7 +20,7 @@ import (
 // @Failure		500				{object}	engine.ErrorData		"Internal Server Error"
 // @Router			/v1/articles [post]
 //
-//	Crear Artículo
+// Crear Artículo
 func init() {
 	engine.Router().POST(
 		"/v1/articles",

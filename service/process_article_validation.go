@@ -7,16 +7,15 @@ import (
 	"github.com/nmarsollier/cataloggo/tools"
 )
 
+// @Summary		Mensage Rabbit article-data o article-exist
+// @Description	Antes de iniciar las operaciones se validan los artículos contra el catalogo.
+// @Tags			Rabbit
+// @Accept			json
+// @Produce		json
+// @Param			article-data	body	ConsumeArticleValidation	true	"Message para Type = article-data"
+// @Router			/rabbit/article-data [get]
+//
 // Validar Artículos
-//
-//	@Summary		Mensage Rabbit article-data o article-exist
-//	@Description	Antes de iniciar las operaciones se validan los artículos contra el catalogo.
-//	@Tags			Rabbit
-//	@Accept			json
-//	@Produce		json
-//	@Param			article-data	body	ConsumeArticleValidation	true	"Message para Type = article-data"
-//
-//	@Router			/rabbit/article-data [get]
 func ProcessArticleData(data *ConsumeArticleValidation) {
 	response := &SendValidationMessage{
 		Type:     data.Type,
