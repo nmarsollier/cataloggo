@@ -11,6 +11,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+var ErrID = apperr.NewValidation().Add("id", "Invalid")
+
 // Define mongo Collection
 var collection *mongo.Collection
 
@@ -81,7 +83,7 @@ func findById(articleId string) (*Article, error) {
 	if err != nil {
 		glog.Error(err)
 
-		return nil, apperr.ErrID
+		return nil, ErrID
 	}
 
 	article := &Article{}
@@ -132,7 +134,7 @@ func Disable(articleId string) error {
 	if err != nil {
 		glog.Error(err)
 
-		return apperr.ErrID
+		return ErrID
 	}
 
 	_, err = collection.UpdateOne(context.Background(),
@@ -158,7 +160,7 @@ func updateDescription(articleId string, description Description) error {
 	if err != nil {
 		glog.Error(err)
 
-		return apperr.ErrID
+		return ErrID
 	}
 	_, err = collection.UpdateOne(context.Background(),
 		bson.M{"_id": _id},
@@ -183,7 +185,7 @@ func updatePrice(articleId string, price float32) error {
 	if err != nil {
 		glog.Error(err)
 
-		return apperr.ErrID
+		return ErrID
 	}
 	_, err = collection.UpdateOne(context.Background(),
 		bson.M{"_id": _id},
@@ -208,7 +210,7 @@ func updateStock(articleId string, stock int) error {
 	if err != nil {
 		glog.Error(err)
 
-		return apperr.ErrID
+		return ErrID
 	}
 	_, err = collection.UpdateOne(context.Background(),
 		bson.M{"_id": _id},

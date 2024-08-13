@@ -118,10 +118,10 @@ Crear Artículo
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | Articulo | [article.ArticleData](#articlearticledata) |
-| 400 | Bad Request | [apperr.ErrValidation](#apperrerrvalidation) |
-| 401 | Unauthorized | [apperr.ErrCustom](#apperrerrcustom) |
-| 404 | Not Found | [apperr.ErrCustom](#apperrerrcustom) |
-| 500 | Internal Server Error | [apperr.ErrCustom](#apperrerrcustom) |
+| 400 | Bad Request | [apperr.ValidationErr](#apperrvalidationerr) |
+| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
+| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
+| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
 
 ### /v1/articles/:articleId
 
@@ -146,10 +146,10 @@ Eliminar Artículo
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | No Content |  |
-| 400 | Bad Request | [apperr.ErrValidation](#apperrerrvalidation) |
-| 401 | Unauthorized | [apperr.ErrCustom](#apperrerrcustom) |
-| 404 | Not Found | [apperr.ErrCustom](#apperrerrcustom) |
-| 500 | Internal Server Error | [apperr.ErrCustom](#apperrerrcustom) |
+| 400 | Bad Request | [apperr.ValidationErr](#apperrvalidationerr) |
+| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
+| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
+| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
 
 #### GET
 ##### Summary
@@ -172,10 +172,10 @@ Obtener un articulo
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | Articulo | [article.ArticleData](#articlearticledata) |
-| 400 | Bad Request | [apperr.ErrValidation](#apperrerrvalidation) |
-| 401 | Unauthorized | [apperr.ErrCustom](#apperrerrcustom) |
-| 404 | Not Found | [apperr.ErrCustom](#apperrerrcustom) |
-| 500 | Internal Server Error | [apperr.ErrCustom](#apperrerrcustom) |
+| 400 | Bad Request | [apperr.ValidationErr](#apperrvalidationerr) |
+| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
+| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
+| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
 
 #### POST
 ##### Summary
@@ -198,10 +198,10 @@ Actualizar Artículo
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | Articulo | [article.ArticleData](#articlearticledata) |
-| 400 | Bad Request | [apperr.ErrValidation](#apperrerrvalidation) |
-| 401 | Unauthorized | [apperr.ErrCustom](#apperrerrcustom) |
-| 404 | Not Found | [apperr.ErrCustom](#apperrerrcustom) |
-| 500 | Internal Server Error | [apperr.ErrCustom](#apperrerrcustom) |
+| 400 | Bad Request | [apperr.ValidationErr](#apperrvalidationerr) |
+| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
+| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
+| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
 
 ### /v1/articles/search/:criteria
 
@@ -226,32 +226,26 @@ Obtener un articulo
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | Articulos | [ [article.ArticleData](#articlearticledata) ] |
-| 400 | Bad Request | [apperr.ErrValidation](#apperrerrvalidation) |
-| 401 | Unauthorized | [apperr.ErrCustom](#apperrerrcustom) |
-| 404 | Not Found | [apperr.ErrCustom](#apperrerrcustom) |
-| 500 | Internal Server Error | [apperr.ErrCustom](#apperrerrcustom) |
+| 400 | Bad Request | [apperr.ValidationErr](#apperrvalidationerr) |
+| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
+| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
+| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
 
 ---
 ### Models
 
-#### apperr.ErrCustom
+#### apperr.ValidationErr
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| error | string |  | No |
+| messages | [ [apperr.errField](#apperrerrfield) ] |  | No |
 
-#### apperr.ErrField
+#### apperr.errField
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | message | string |  | No |
 | path | string |  | No |
-
-#### apperr.ErrValidation
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| messages | [ [apperr.ErrField](#apperrerrfield) ] |  | No |
 
 #### article.ArticleData
 
@@ -274,6 +268,12 @@ Obtener un articulo
 | name | string |  | Yes |
 | price | number |  | Yes |
 | stock | integer |  | Yes |
+
+#### engine.ErrorData
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| error | string |  | No |
 
 #### r_consume.LogoutMessage
 

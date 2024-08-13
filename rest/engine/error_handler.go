@@ -1,4 +1,4 @@
-package middlewares
+package engine
 
 import (
 	"strings"
@@ -37,7 +37,7 @@ func handleErrorIfNeeded(c *gin.Context) {
 func handleError(c *gin.Context, err interface{}) {
 	// Compruebo tipos de errores conocidos
 	switch value := err.(type) {
-	case apperr.Custom:
+	case apperr.RestError:
 		// Son validaciones hechas con NewCustom
 		handleCustom(c, value)
 	case apperr.Validation:
@@ -48,8 +48,8 @@ func handleError(c *gin.Context, err interface{}) {
 		handleValidationError(c, value)
 	case error:
 		// Otros errores
-		c.JSON(500, gin.H{
-			"error": value.Error(),
+		c.JSON(500, ErrorData{
+			Error: value.Error(),
 		})
 	default:
 		// No se sabe que es, devolvemos internal
@@ -57,21 +57,6 @@ func handleError(c *gin.Context, err interface{}) {
 	}
 }
 
-/**
- * @apiDefine ParamValidationErrors
- *
- * @apiErrorExample 400 Bad Request
- *     HTTP/1.1 400 Bad Request
- *     {
- *        "messages" : [
- *          {
- *            "path" : "{Nombre de la propiedad}",
- *            "message" : "{Motivo del error}"
- *          },
- *          ...
- *       ]
- *     }
- */
 func handleValidationError(c *gin.Context, validationErrors validator.ValidationErrors) {
 	err := apperr.NewValidation()
 
@@ -82,16 +67,10 @@ func handleValidationError(c *gin.Context, validationErrors validator.Validation
 	c.JSON(400, err)
 }
 
-/**
- * @apiDefine OtherErrors
- *
- * @apiErrorExample 500 Server Error
- *     HTTP/1.1 500 Internal Server Error
- *     {
- *        "error" : "Not Found"
- *     }
- *
- */
-func handleCustom(c *gin.Context, err apperr.Custom) {
+func handleCustom(c *gin.Context, err apperr.RestError) {
 	c.JSON(err.Status(), err)
+}
+
+type ErrorData struct {
+	Error string `json:"error"`
 }

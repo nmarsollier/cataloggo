@@ -165,25 +165,25 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrValidation"
+                            "$ref": "#/definitions/apperr.ValidationErr"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     }
                 }
@@ -228,25 +228,25 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrValidation"
+                            "$ref": "#/definitions/apperr.ValidationErr"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     }
                 }
@@ -291,25 +291,25 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrValidation"
+                            "$ref": "#/definitions/apperr.ValidationErr"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     }
                 }
@@ -349,25 +349,25 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrValidation"
+                            "$ref": "#/definitions/apperr.ValidationErr"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     }
                 }
@@ -415,25 +415,25 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrValidation"
+                            "$ref": "#/definitions/apperr.ValidationErr"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ErrCustom"
+                            "$ref": "#/definitions/engine.ErrorData"
                         }
                     }
                 }
@@ -441,15 +441,18 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "apperr.ErrCustom": {
+        "apperr.ValidationErr": {
             "type": "object",
             "properties": {
-                "error": {
-                    "type": "string"
+                "messages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/apperr.errField"
+                    }
                 }
             }
         },
-        "apperr.ErrField": {
+        "apperr.errField": {
             "type": "object",
             "properties": {
                 "message": {
@@ -457,17 +460,6 @@ const docTemplate = `{
                 },
                 "path": {
                     "type": "string"
-                }
-            }
-        },
-        "apperr.ErrValidation": {
-            "type": "object",
-            "properties": {
-                "messages": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/apperr.ErrField"
-                    }
                 }
             }
         },
@@ -527,6 +519,14 @@ const docTemplate = `{
                 "stock": {
                     "type": "integer",
                     "minimum": 1
+                }
+            }
+        },
+        "engine.ErrorData": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
                 }
             }
         },

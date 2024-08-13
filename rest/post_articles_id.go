@@ -4,11 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nmarsollier/cataloggo/article"
 	"github.com/nmarsollier/cataloggo/rest/engine"
-	"github.com/nmarsollier/cataloggo/rest/middlewares"
 )
 
-//	Actualizar Artículo
-//
 // @Summary		Actualizar Artículo
 // @Description	Actualizar Artículo
 // @Tags			Catalogo
@@ -17,16 +14,17 @@ import (
 // @Param			Authorization	header		string					true	"bearer {token}"
 // @Param			body			body		article.NewArticleData	true	"Informacion del articulo"
 // @Success		200				{object}	article.ArticleData		"Articulo"
-// @Failure		400				{object}	apperr.ErrValidation	"Bad Request"
-// @Failure		401				{object}	apperr.ErrCustom		"Unauthorized"
-// @Failure		404				{object}	apperr.ErrCustom		"Not Found"
-// @Failure		500				{object}	apperr.ErrCustom		"Internal Server Error"
-//
+// @Failure		400				{object}	apperr.ValidationErr	"Bad Request"
+// @Failure		401				{object}	engine.ErrorData		"Unauthorized"
+// @Failure		404				{object}	engine.ErrorData		"Not Found"
+// @Failure		500				{object}	engine.ErrorData		"Internal Server Error"
 // @Router			/v1/articles/:articleId [post]
+//
+//	Actualizar Artículo
 func init() {
 	engine.Router().POST(
 		"/v1/articles/:articleId",
-		middlewares.ValidateAuthentication,
+		engine.ValidateAuthentication,
 		updateArticle,
 	)
 }
@@ -34,14 +32,14 @@ func init() {
 func updateArticle(c *gin.Context) {
 	body := article.NewArticleData{}
 	if err := c.ShouldBindJSON(&body); err != nil {
-		middlewares.AbortWithError(c, err)
+		engine.AbortWithError(c, err)
 		return
 	}
 	articleId := c.Param("articleId")
 
 	err := article.UpdateArticle(articleId, &body)
 	if err != nil {
-		middlewares.AbortWithError(c, err)
+		engine.AbortWithError(c, err)
 		return
 	}
 
