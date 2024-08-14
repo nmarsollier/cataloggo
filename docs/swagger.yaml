@@ -107,7 +107,7 @@ definitions:
           $ref: '#/definitions/service.ConsumeOrderPlacedArticle'
         type: array
       cartId:
-        type: integer
+        type: string
       orderId:
         type: string
     type: object

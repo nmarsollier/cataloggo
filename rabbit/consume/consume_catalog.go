@@ -97,7 +97,7 @@ func consumeOrders() error {
 		for d := range mgs {
 			newMessage := &service.ConsumeArticleValidation{}
 			body := d.Body
-			glog.Info("Rannit Consumed : ", string(body))
+			glog.Info("Rabbit Consumed : ", string(body))
 
 			err = json.Unmarshal(body, newMessage)
 			if err == nil {

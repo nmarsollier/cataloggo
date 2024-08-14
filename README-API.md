@@ -310,7 +310,7 @@ Obtener un articulo
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | articles | [ [service.ConsumeOrderPlacedArticle](#serviceconsumeorderplacedarticle) ] |  | No |
-| cartId | integer |  | No |
+| cartId | string |  | No |
 | orderId | string |  | No |
 
 #### service.EmitArticleValidation

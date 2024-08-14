@@ -597,7 +597,7 @@ const docTemplate = `{
                     }
                 },
                 "cartId": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "orderId": {
                     "type": "string"

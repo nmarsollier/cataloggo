@@ -84,7 +84,7 @@ func EmitDirect(exchange string, queue string, data interface{}) error {
 		return err
 	}
 
-	glog.Info("Rabbit Sent : ", body)
+	glog.Info("Rabbit Sent : ", string(body))
 
 	return nil
 }

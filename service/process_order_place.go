@@ -9,7 +9,7 @@ func ProcessOrderPlaced(data *ConsumeOrderPlaced) {
 	for _, a := range data.Message.Articles {
 		art, err := article.FindById(a.ArticleId)
 		if err == nil {
-			article.DecreaseStock(art.ID, art.Stock)
+			article.DecreaseStock(art.ID, a.Quantity)
 		}
 	}
 
@@ -26,7 +26,7 @@ type ConsumeOrderPlaced struct {
 
 type ConsumeOrderPlacedMessage struct {
 	OrderId  string                       `json:"orderId"`
-	CartId   int                          `json:"cartId"`
+	CartId   string                       `json:"cartId"`
 	Articles []*ConsumeOrderPlacedArticle `json:"articles"`
 }
 

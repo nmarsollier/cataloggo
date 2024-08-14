@@ -97,7 +97,7 @@ func consumeLogout() error {
 		for d := range mgs {
 			newMessage := &logoutMessage{}
 			body := d.Body
-			glog.Info("Rannit Consumed : ", string(body))
+			glog.Info("Rabbit Consumed : ", string(body))
 
 			err = json.Unmarshal(body, newMessage)
 			if err == nil {

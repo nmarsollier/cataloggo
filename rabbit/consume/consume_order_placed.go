@@ -47,12 +47,12 @@ func consumeOrderPlaced() error {
 	}
 
 	queue, err := chn.QueueDeclare(
-		"cart_order_placed", // name
-		false,               // durable
-		false,               // delete when unused
-		false,               // exclusive
-		false,               // no-wait
-		nil,                 // arguments
+		"catalog_order_placed", // name
+		false,                  // durable
+		false,                  // delete when unused
+		false,                  // exclusive
+		false,                  // no-wait
+		nil,                    // arguments
 	)
 	if err != nil {
 		glog.Error(err)
@@ -60,9 +60,9 @@ func consumeOrderPlaced() error {
 	}
 
 	err = chn.QueueBind(
-		queue.Name,          // queue name
-		"cart_order_placed", // routing key
-		"order_placed",      // exchange
+		queue.Name,     // queue name
+		"",             // routing key
+		"order_placed", // exchange
 		false,
 		nil)
 	if err != nil {
@@ -90,7 +90,7 @@ func consumeOrderPlaced() error {
 		for d := range mgs {
 			newMessage := &ConsumeMessage{}
 			body := d.Body
-			glog.Info("Rannit Consumed : ", string(body))
+			glog.Info("Rabbit Consumed : ", string(body))
 
 			err = json.Unmarshal(body, newMessage)
 			if err == nil {
