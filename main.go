@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/nmarsollier/cataloggo/rabbit/r_consume"
+	"github.com/nmarsollier/cataloggo/rabbit/consume"
 	routes "github.com/nmarsollier/cataloggo/rest"
 )
 
@@ -24,6 +24,6 @@ func main() {
 	flag.Set("v", "2")
 
 	//
-	r_consume.Init()
+	consume.Init()
 	routes.Start()
 }

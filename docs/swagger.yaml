@@ -1,19 +1,5 @@
 basePath: /v1
 definitions:
-  apperr.ValidationErr:
-    properties:
-      messages:
-        items:
-          $ref: '#/definitions/apperr.errField'
-        type: array
-    type: object
-  apperr.errField:
-    properties:
-      message:
-        type: string
-      path:
-        type: string
-    type: object
   article.ArticleData:
     properties:
       _id:
@@ -56,18 +42,32 @@ definitions:
     - price
     - stock
     type: object
-  engine.ErrorData:
-    properties:
-      error:
-        type: string
-    type: object
-  r_consume.logoutMessage:
+  consume.logoutMessage:
     properties:
       message:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg
         type: string
       type:
         example: logout
+        type: string
+    type: object
+  engine.ErrorData:
+    properties:
+      error:
+        type: string
+    type: object
+  errs.ValidationErr:
+    properties:
+      messages:
+        items:
+          $ref: '#/definitions/errs.errField'
+        type: array
+    type: object
+  errs.errField:
+    properties:
+      message:
+        type: string
+      path:
         type: string
     type: object
   service.ConsumeArticleValidation:
@@ -182,7 +182,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/r_consume.logoutMessage'
+          $ref: '#/definitions/consume.logoutMessage'
       produces:
       - application/json
       responses: {}
@@ -236,7 +236,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/apperr.ValidationErr'
+            $ref: '#/definitions/errs.ValidationErr'
         "401":
           description: Unauthorized
           schema:
@@ -276,7 +276,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/apperr.ValidationErr'
+            $ref: '#/definitions/errs.ValidationErr'
         "401":
           description: Unauthorized
           schema:
@@ -317,7 +317,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/apperr.ValidationErr'
+            $ref: '#/definitions/errs.ValidationErr'
         "401":
           description: Unauthorized
           schema:
@@ -359,7 +359,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/apperr.ValidationErr'
+            $ref: '#/definitions/errs.ValidationErr'
         "401":
           description: Unauthorized
           schema:
@@ -403,7 +403,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/apperr.ValidationErr'
+            $ref: '#/definitions/errs.ValidationErr'
         "401":
           description: Unauthorized
           schema:

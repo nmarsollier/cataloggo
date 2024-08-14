@@ -1,11 +1,10 @@
-package r_emit
+package emit
 
 import (
 	"encoding/json"
 	"errors"
 
 	"github.com/golang/glog"
-	"github.com/nmarsollier/cataloggo/tools"
 	"github.com/nmarsollier/cataloggo/tools/env"
 	"github.com/streadway/amqp"
 )
@@ -85,7 +84,7 @@ func EmitDirect(exchange string, queue string, data interface{}) error {
 		return err
 	}
 
-	glog.Info("Rabbit Sent : ", tools.ToJson(body))
+	glog.Info("Rabbit Sent : ", body)
 
 	return nil
 }

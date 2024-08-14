@@ -84,7 +84,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/r_consume.logoutMessage"
+                            "$ref": "#/definitions/consume.logoutMessage"
                         }
                     }
                 ],
@@ -159,7 +159,7 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ValidationErr"
+                            "$ref": "#/definitions/errs.ValidationErr"
                         }
                     },
                     "401": {
@@ -222,7 +222,7 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ValidationErr"
+                            "$ref": "#/definitions/errs.ValidationErr"
                         }
                     },
                     "401": {
@@ -285,7 +285,7 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ValidationErr"
+                            "$ref": "#/definitions/errs.ValidationErr"
                         }
                     },
                     "401": {
@@ -343,7 +343,7 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ValidationErr"
+                            "$ref": "#/definitions/errs.ValidationErr"
                         }
                     },
                     "401": {
@@ -409,7 +409,7 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/apperr.ValidationErr"
+                            "$ref": "#/definitions/errs.ValidationErr"
                         }
                     },
                     "401": {
@@ -435,28 +435,6 @@
         }
     },
     "definitions": {
-        "apperr.ValidationErr": {
-            "type": "object",
-            "properties": {
-                "messages": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/apperr.errField"
-                    }
-                }
-            }
-        },
-        "apperr.errField": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "path": {
-                    "type": "string"
-                }
-            }
-        },
         "article.ArticleData": {
             "type": "object",
             "properties": {
@@ -516,15 +494,7 @@
                 }
             }
         },
-        "engine.ErrorData": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "r_consume.logoutMessage": {
+        "consume.logoutMessage": {
             "type": "object",
             "properties": {
                 "message": {
@@ -534,6 +504,36 @@
                 "type": {
                     "type": "string",
                     "example": "logout"
+                }
+            }
+        },
+        "engine.ErrorData": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "errs.ValidationErr": {
+            "type": "object",
+            "properties": {
+                "messages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/errs.errField"
+                    }
+                }
+            }
+        },
+        "errs.errField": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
                 }
             }
         },

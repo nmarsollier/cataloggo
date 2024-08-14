@@ -4,14 +4,14 @@ import (
 	"context"
 
 	"github.com/golang/glog"
-	"github.com/nmarsollier/cataloggo/tools/apperr"
 	"github.com/nmarsollier/cataloggo/tools/db"
+	"github.com/nmarsollier/cataloggo/tools/errs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var ErrID = apperr.NewValidation().Add("id", "Invalid")
+var ErrID = errs.NewValidation().Add("id", "Invalid")
 
 // Define mongo Collection
 var collection *mongo.Collection

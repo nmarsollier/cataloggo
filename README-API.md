@@ -65,7 +65,7 @@ Escucha de mensajes logout desde auth.
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| body | body | Estructura general del mensage | Yes | [r_consume.logoutMessage](#r_consumelogoutmessage) |
+| body | body | Estructura general del mensage | Yes | [consume.logoutMessage](#consumelogoutmessage) |
 
 ##### Responses
 
@@ -118,7 +118,7 @@ Crear Artículo
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | Articulo | [article.ArticleData](#articlearticledata) |
-| 400 | Bad Request | [apperr.ValidationErr](#apperrvalidationerr) |
+| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
 | 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
 | 404 | Not Found | [engine.ErrorData](#engineerrordata) |
 | 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
@@ -146,7 +146,7 @@ Eliminar Artículo
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | No Content |  |
-| 400 | Bad Request | [apperr.ValidationErr](#apperrvalidationerr) |
+| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
 | 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
 | 404 | Not Found | [engine.ErrorData](#engineerrordata) |
 | 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
@@ -172,7 +172,7 @@ Obtener un articulo
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | Articulo | [article.ArticleData](#articlearticledata) |
-| 400 | Bad Request | [apperr.ValidationErr](#apperrvalidationerr) |
+| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
 | 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
 | 404 | Not Found | [engine.ErrorData](#engineerrordata) |
 | 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
@@ -198,7 +198,7 @@ Actualizar Artículo
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | Articulo | [article.ArticleData](#articlearticledata) |
-| 400 | Bad Request | [apperr.ValidationErr](#apperrvalidationerr) |
+| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
 | 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
 | 404 | Not Found | [engine.ErrorData](#engineerrordata) |
 | 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
@@ -226,26 +226,13 @@ Obtener un articulo
 | Code | Description | Schema |
 | ---- | ----------- | ------ |
 | 200 | Articulos | [ [article.ArticleData](#articlearticledata) ] |
-| 400 | Bad Request | [apperr.ValidationErr](#apperrvalidationerr) |
+| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
 | 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
 | 404 | Not Found | [engine.ErrorData](#engineerrordata) |
 | 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
 
 ---
 ### Models
-
-#### apperr.ValidationErr
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| messages | [ [apperr.errField](#apperrerrfield) ] |  | No |
-
-#### apperr.errField
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| message | string |  | No |
-| path | string |  | No |
 
 #### article.ArticleData
 
@@ -269,18 +256,31 @@ Obtener un articulo
 | price | number |  | Yes |
 | stock | integer |  | Yes |
 
+#### consume.logoutMessage
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| message | string | *Example:* `"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg"` | No |
+| type | string | *Example:* `"logout"` | No |
+
 #### engine.ErrorData
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | error | string |  | No |
 
-#### r_consume.logoutMessage
+#### errs.ValidationErr
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| message | string | *Example:* `"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg"` | No |
-| type | string | *Example:* `"logout"` | No |
+| messages | [ [errs.errField](#errserrfield) ] |  | No |
+
+#### errs.errField
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| message | string |  | No |
+| path | string |  | No |
 
 #### service.ConsumeArticleValidation
 

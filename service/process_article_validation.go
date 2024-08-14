@@ -3,8 +3,7 @@ package service
 import (
 	"github.com/golang/glog"
 	"github.com/nmarsollier/cataloggo/article"
-	"github.com/nmarsollier/cataloggo/rabbit/r_emit"
-	"github.com/nmarsollier/cataloggo/tools"
+	"github.com/nmarsollier/cataloggo/rabbit/emit"
 )
 
 func ProcessArticleData(data *ConsumeArticleValidation) {
@@ -20,7 +19,7 @@ func ProcessArticleData(data *ConsumeArticleValidation) {
 	}
 	article, err := article.FindById(data.Message.ArticleId)
 	if err != nil {
-		r_emit.EmitDirect(data.Exchange, data.Queue, response)
+		emit.EmitDirect(data.Exchange, data.Queue, response)
 		return
 	}
 
@@ -31,9 +30,9 @@ func ProcessArticleData(data *ConsumeArticleValidation) {
 		Price:       article.Price,
 		Valid:       article.Enabled,
 	}
-	r_emit.EmitDirect(data.Exchange, data.Queue, response)
+	emit.EmitDirect(data.Exchange, data.Queue, response)
 
-	glog.Info("Article validation completed : ", tools.ToJson(data))
+	glog.Info("Article validation completed : ", data)
 }
 
 type EmitArticleValidation struct {
