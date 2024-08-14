@@ -9,6 +9,15 @@ import (
 	"github.com/streadway/amqp"
 )
 
+//	@Summary		Mensage Rabbit order/order-placed
+//	@Description	Cuando se recibe el mensage order-placed damos de baja al stock para reservar los articulos. Queda pendiente enviar mensaje confirmando la operacion al MS de Orders.
+//	@Tags			Rabbit
+//	@Accept			json
+//	@Produce		json
+//	@Param			article-data	body	service.ConsumeOrderPlacedMessage	true	"Message para Type = article-data"
+//	@Router			/rabbit/order-placed [get]
+//
+// Consume Order Placed
 func consumeOrderPlaced() error {
 	conn, err := amqp.Dial(env.Get().RabbitURL)
 	if err != nil {

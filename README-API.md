@@ -17,7 +17,7 @@ Mensage Rabbit article-data o article-exist
 
 ##### Description
 
-Antes de iniciar las operaciones se validan los artículos contra el catalogo.
+Otros microservicios nos solicitan validar articulos en el catalogo, respondemos encviando direct al Exchange/Queue proporcionado.
 
 ##### Parameters
 
@@ -65,7 +65,7 @@ Escucha de mensajes logout desde auth.
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| body | body | Estructura general del mensage | Yes | [r_consume.LogoutMessage](#r_consumelogoutmessage) |
+| body | body | Estructura general del mensage | Yes | [r_consume.logoutMessage](#r_consumelogoutmessage) |
 
 ##### Responses
 
@@ -81,7 +81,7 @@ Mensage Rabbit order/order-placed
 
 ##### Description
 
-Antes de iniciar las operaciones se validan los artículos contra el catalogo.
+Cuando se recibe el mensage order-placed damos de baja al stock para reservar los articulos. Queda pendiente enviar mensaje confirmando la operacion al MS de Orders.
 
 ##### Parameters
 
@@ -275,29 +275,28 @@ Obtener un articulo
 | ---- | ---- | ----------- | -------- |
 | error | string |  | No |
 
-#### r_consume.LogoutMessage
+#### r_consume.logoutMessage
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| message | string |  | No |
-| type | string |  | No |
+| message | string | *Example:* `"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg"` | No |
+| type | string | *Example:* `"logout"` | No |
 
 #### service.ConsumeArticleValidation
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| exchange | string |  | No |
+| exchange | string | *Example:* `"Remote Exchange to Reply"` | No |
 | message | [service.ConsumeArticleValidationMessage](#serviceconsumearticlevalidationmessage) |  | No |
-| queue | string |  | No |
-| type | string |  | No |
-| version | integer |  | No |
+| queue | string | *Example:* `"Remote Queue to Reply"` | No |
+| type | string | *Example:* `"article-data"` | No |
 
 #### service.ConsumeArticleValidationMessage
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| articleId | string |  | No |
-| referenceId | string |  | No |
+| articleId | string | *Example:* `"ArticleId"` | No |
+| referenceId | string | *Example:* `"Remote Reference Object Id"` | No |
 
 #### service.ConsumeOrderPlacedArticle
 
@@ -318,8 +317,8 @@ Obtener un articulo
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| articleId | string |  | No |
+| articleId | string | *Example:* `"ArticleId"` | No |
 | price | number |  | No |
-| referenceId | string |  | No |
+| referenceId | string | *Example:* `"Remote Reference Id"` | No |
 | stock | integer |  | No |
 | valid | boolean |  | No |

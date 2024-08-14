@@ -7,15 +7,6 @@ import (
 	"github.com/nmarsollier/cataloggo/tools"
 )
 
-// @Summary		Mensage Rabbit article-data o article-exist
-// @Description	Antes de iniciar las operaciones se validan los artículos contra el catalogo.
-// @Tags			Rabbit
-// @Accept			json
-// @Produce		json
-// @Param			article-data	body	ConsumeArticleValidation	true	"Message para Type = article-data"
-// @Router			/rabbit/article-data [get]
-//
-// Validar Artículos
 func ProcessArticleData(data *ConsumeArticleValidation) {
 	response := &SendValidationMessage{
 		Type:     data.Type,
@@ -46,29 +37,29 @@ func ProcessArticleData(data *ConsumeArticleValidation) {
 }
 
 type EmitArticleValidation struct {
-	ArticleId   string  `json:"articleId"`
+	ArticleId   string  `json:"articleId" example:"ArticleId" `
 	Price       float32 `json:"price"`
-	ReferenceId string  `json:"referenceId"`
+	ReferenceId string  `json:"referenceId" example:"Remote Reference Id"`
 	Stock       int     `json:"stock"`
 	Valid       bool    `json:"valid"`
 }
 
 type ConsumeArticleValidation struct {
-	Type     string `json:"type"`
-	Version  int    `json:"version"`
-	Queue    string `json:"queue"`
-	Exchange string `json:"exchange"`
+	Type     string `json:"type" example:"article-data" `
+	Queue    string `json:"queue" example:"Remote Queue to Reply" `
+	Exchange string `json:"exchange" example:"Remote Exchange to Reply"`
 	Message  *ConsumeArticleValidationMessage
 }
 
 type SendValidationMessage struct {
-	Type     string      `json:"type"`
-	Exchange string      `json:"exchange"`
-	Queue    string      `json:"queue"`
+	Type     string      `json:"type" example:"article-exist"`
+	Exchange string      `json:"exchange" example:"cart"`
+	Queue    string      `json:"queue" example:"cart"`
 	Message  interface{} `json:"message"`
 }
 
 type ConsumeArticleValidationMessage struct {
-	ArticleId   string `json:"articleId"`
-	ReferenceId string `json:"referenceId"`
+	ReferenceId string `json:"referenceId" example:"Remote Reference Object Id"`
+
+	ArticleId string `json:"articleId" example:"ArticleId"`
 }

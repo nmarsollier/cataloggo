@@ -20,7 +20,7 @@ const docTemplate = `{
     "paths": {
         "/rabbit/article-data": {
             "get": {
-                "description": "Antes de iniciar las operaciones se validan los artículos contra el catalogo.",
+                "description": "Otros microservicios nos solicitan validar articulos en el catalogo, respondemos encviando direct al Exchange/Queue proporcionado.",
                 "consumes": [
                     "application/json"
                 ],
@@ -90,7 +90,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/r_consume.LogoutMessage"
+                            "$ref": "#/definitions/r_consume.logoutMessage"
                         }
                     }
                 ],
@@ -99,7 +99,7 @@ const docTemplate = `{
         },
         "/rabbit/order-placed": {
             "get": {
-                "description": "Antes de iniciar las operaciones se validan los artículos contra el catalogo.",
+                "description": "Cuando se recibe el mensage order-placed damos de baja al stock para reservar los articulos. Queda pendiente enviar mensaje confirmando la operacion al MS de Orders.",
                 "consumes": [
                     "application/json"
                 ],
@@ -530,14 +530,16 @@ const docTemplate = `{
                 }
             }
         },
-        "r_consume.LogoutMessage": {
+        "r_consume.logoutMessage": {
             "type": "object",
             "properties": {
                 "message": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg"
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "logout"
                 }
             }
         },
@@ -545,19 +547,19 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "exchange": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Remote Exchange to Reply"
                 },
                 "message": {
                     "$ref": "#/definitions/service.ConsumeArticleValidationMessage"
                 },
                 "queue": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Remote Queue to Reply"
                 },
                 "type": {
-                    "type": "string"
-                },
-                "version": {
-                    "type": "integer"
+                    "type": "string",
+                    "example": "article-data"
                 }
             }
         },
@@ -565,10 +567,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "articleId": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "ArticleId"
                 },
                 "referenceId": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Remote Reference Object Id"
                 }
             }
         },
@@ -604,13 +608,15 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "articleId": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "ArticleId"
                 },
                 "price": {
                     "type": "number"
                 },
                 "referenceId": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Remote Reference Id"
                 },
                 "stock": {
                     "type": "integer"

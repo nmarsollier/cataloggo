@@ -61,31 +61,36 @@ definitions:
       error:
         type: string
     type: object
-  r_consume.LogoutMessage:
+  r_consume.logoutMessage:
     properties:
       message:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg
         type: string
       type:
+        example: logout
         type: string
     type: object
   service.ConsumeArticleValidation:
     properties:
       exchange:
+        example: Remote Exchange to Reply
         type: string
       message:
         $ref: '#/definitions/service.ConsumeArticleValidationMessage'
       queue:
+        example: Remote Queue to Reply
         type: string
       type:
+        example: article-data
         type: string
-      version:
-        type: integer
     type: object
   service.ConsumeArticleValidationMessage:
     properties:
       articleId:
+        example: ArticleId
         type: string
       referenceId:
+        example: Remote Reference Object Id
         type: string
     type: object
   service.ConsumeOrderPlacedArticle:
@@ -109,10 +114,12 @@ definitions:
   service.EmitArticleValidation:
     properties:
       articleId:
+        example: ArticleId
         type: string
       price:
         type: number
       referenceId:
+        example: Remote Reference Id
         type: string
       stock:
         type: integer
@@ -132,8 +139,8 @@ paths:
     get:
       consumes:
       - application/json
-      description: Antes de iniciar las operaciones se validan los artículos contra
-        el catalogo.
+      description: Otros microservicios nos solicitan validar articulos en el catalogo,
+        respondemos encviando direct al Exchange/Queue proporcionado.
       parameters:
       - description: Message para Type = article-data
         in: body
@@ -175,7 +182,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/r_consume.LogoutMessage'
+          $ref: '#/definitions/r_consume.logoutMessage'
       produces:
       - application/json
       responses: {}
@@ -186,8 +193,9 @@ paths:
     get:
       consumes:
       - application/json
-      description: Antes de iniciar las operaciones se validan los artículos contra
-        el catalogo.
+      description: Cuando se recibe el mensage order-placed damos de baja al stock
+        para reservar los articulos. Queda pendiente enviar mensaje confirmando la
+        operacion al MS de Orders.
       parameters:
       - description: Message para Type = article-data
         in: body

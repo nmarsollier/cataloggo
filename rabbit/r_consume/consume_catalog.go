@@ -9,6 +9,15 @@ import (
 	"github.com/streadway/amqp"
 )
 
+//	@Summary		Mensage Rabbit article-data o article-exist
+//	@Description	Otros microservicios nos solicitan validar articulos en el catalogo, respondemos encviando direct al Exchange/Queue proporcionado.
+//	@Tags			Rabbit
+//	@Accept			json
+//	@Produce		json
+//	@Param			article-data	body	service.ConsumeArticleValidation	true	"Message para Type = article-data"
+//	@Router			/rabbit/article-data [get]
+//
+// Validar Artículos
 func consumeOrders() error {
 	conn, err := amqp.Dial(env.Get().RabbitURL)
 	if err != nil {
