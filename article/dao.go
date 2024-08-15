@@ -6,7 +6,6 @@ import (
 	"github.com/golang/glog"
 	"github.com/nmarsollier/cataloggo/tools/db"
 	"github.com/nmarsollier/cataloggo/tools/errs"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -42,10 +41,10 @@ func findByCriteria(criteria string) ([]*Article, error) {
 		return nil, err
 	}
 
-	filter := bson.M{
-		"$or": []bson.M{
-			{"description.name": bson.M{"$regex": criteria, "$options": "i"}},
-			{"description.description": bson.M{"$regex": criteria, "$options": "i"}},
+	filter := DBCriteriaFilter{
+		Or: []map[string]DBCriteriaElement{
+			{"description.name": {RegEx: criteria, Options: "i"}},
+			{"description.description": {RegEx: criteria, Options: "i"}},
 		},
 	}
 
@@ -71,6 +70,15 @@ func findByCriteria(criteria string) ([]*Article, error) {
 	return result, nil
 }
 
+type DBCriteriaFilter struct {
+	Or []map[string]DBCriteriaElement `bson:"$or"`
+}
+
+type DBCriteriaElement struct {
+	RegEx   string `bson:"$regex"`
+	Options string `bson:"$options"`
+}
+
 func findById(articleId string) (*Article, error) {
 	var collection, err = dbCollection()
 	if err != nil {
@@ -87,7 +95,7 @@ func findById(articleId string) (*Article, error) {
 	}
 
 	article := &Article{}
-	filter := bson.M{"_id": _id}
+	filter := DbIdFilter{ID: _id}
 
 	if err = collection.FindOne(context.Background(), filter).Decode(article); err != nil {
 		glog.Error(err)
@@ -138,13 +146,23 @@ func Disable(articleId string) error {
 	}
 
 	_, err = collection.UpdateOne(context.Background(),
-		bson.M{"_id": _id},
-		bson.M{"$set": bson.M{
-			"enabled": false,
-		}},
+		DbIdFilter{ID: _id},
+		DbEnableDocument{
+			Set: DbEnableBody{
+				Enabled: false,
+			},
+		},
 	)
 
 	return err
+}
+
+type DbEnableDocument struct {
+	Set DbEnableBody `bson:"$set"`
+}
+
+type DbEnableBody struct {
+	Enabled bool `bson:"enabled" json:"enabled"`
 }
 
 // Actualiza la descripción de un articulo.
@@ -163,13 +181,23 @@ func updateDescription(articleId string, description Description) error {
 		return ErrID
 	}
 	_, err = collection.UpdateOne(context.Background(),
-		bson.M{"_id": _id},
-		bson.M{"$set": bson.M{
-			"description": description,
-		}},
+		DbIdFilter{ID: _id},
+		DbUpdateDescriptionDocument{
+			Set: DbUpdateDescriptionBody{
+				Description: description,
+			},
+		},
 	)
 
 	return err
+}
+
+type DbUpdateDescriptionDocument struct {
+	Set DbUpdateDescriptionBody `bson:"$set"`
+}
+
+type DbUpdateDescriptionBody struct {
+	Description Description `bson:"description"  json:"description" validate:"required"`
 }
 
 // Actualiza el precio de un articulo.
@@ -188,13 +216,23 @@ func updatePrice(articleId string, price float32) error {
 		return ErrID
 	}
 	_, err = collection.UpdateOne(context.Background(),
-		bson.M{"_id": _id},
-		bson.M{"$set": bson.M{
-			"price": price,
-		}},
+		DbIdFilter{ID: _id},
+		DbUpdatePriceDocument{
+			Set: DbUpdatePriceBody{
+				Price: price,
+			},
+		},
 	)
 
 	return err
+}
+
+type DbUpdatePriceDocument struct {
+	Set DbUpdatePriceBody `bson:"$set"`
+}
+
+type DbUpdatePriceBody struct {
+	Price float32 `bson:"price"  json:"price"`
 }
 
 // Actualiza el stock de un articulo.
@@ -213,16 +251,22 @@ func updateStock(articleId string, stock int) error {
 		return ErrID
 	}
 	_, err = collection.UpdateOne(context.Background(),
-		bson.M{"_id": _id},
-		bson.M{"$set": bson.M{
-			"stock": stock,
-		}},
+		DbIdFilter{ID: _id},
+		DbUpdateStockDocument{
+			Set: DbUpdateStockBody{
+				Stock: stock,
+			},
+		},
 	)
 
 	return err
 }
 
-func DecreaseStock(articleId primitive.ObjectID, stock int) error {
+type DbUpdateStockDocument struct {
+	Set DbUpdateStockBody `bson:"$set"`
+}
+
+func DecreaseStock(articleId primitive.ObjectID, amount int) error {
 	var collection, err = dbCollection()
 	if err != nil {
 		glog.Error(err)
@@ -231,12 +275,31 @@ func DecreaseStock(articleId primitive.ObjectID, stock int) error {
 	}
 
 	_, err = collection.UpdateOne(context.Background(),
-		bson.M{"_id": articleId},
-		bson.M{
-			"$inc": bson.M{
-				"stock": -stock,
-			}},
+		DbIdFilter{ID: articleId},
+		DbIncrementStockDocument{
+			Set: DbIncrementStockBody{
+				Inc: DbUpdateStockBody{
+					Stock: -amount,
+				},
+			},
+		},
 	)
 
 	return err
+}
+
+type DbIncrementStockBody struct {
+	Inc DbUpdateStockBody `bson:"$inc"`
+}
+
+type DbIncrementStockDocument struct {
+	Set DbIncrementStockBody `bson:"$set"`
+}
+
+type DbIdFilter struct {
+	ID primitive.ObjectID `bson:"_id"`
+}
+
+type DbUpdateStockBody struct {
+	Stock int `bson:"stock"  json:"stock"`
 }
