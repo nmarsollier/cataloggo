@@ -54,13 +54,13 @@ Ver la arquitectura de microservicios de [ecommerce](https://github.com/nmarsoll
 
 ## Instalar Librerías requeridas
 
+Configurar hooks de git
 
 ```bash
-go mod download
+git config core.hooksPath .githooks
 ```
 
 Build y ejecución
--
 
 ```bash
 go install
