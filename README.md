@@ -58,6 +58,10 @@ Configurar hooks de git
 
 ```bash
 git config core.hooksPath .githooks
+go install github.com/swaggo/gin-swagger/swaggerFiles 
+go install github.com/swaggo/gin-swagger 
+go install github.com/swaggo/swag/cmd/swag
+go install github.com/golang/mock/mockgen@v1.6.0
 ```
 
 Build y ejecución
