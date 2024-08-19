@@ -6,6 +6,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/nmarsollier/cataloggo/tools/db"
 	"github.com/nmarsollier/cataloggo/tools/errs"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -258,6 +259,9 @@ func updateStock(articleId string, stock int) error {
 			},
 		},
 	)
+	if err != nil {
+		glog.Error(err)
+	}
 
 	return err
 }
@@ -266,7 +270,7 @@ type DbUpdateStockDocument struct {
 	Set DbUpdateStockBody `bson:"$set"`
 }
 
-func DecreaseStock(articleId primitive.ObjectID, amount int) error {
+func DecrementStock(articleId primitive.ObjectID, amount int) error {
 	var collection, err = dbCollection()
 	if err != nil {
 		glog.Error(err)
@@ -275,25 +279,18 @@ func DecreaseStock(articleId primitive.ObjectID, amount int) error {
 	}
 
 	_, err = collection.UpdateOne(context.Background(),
-		DbIdFilter{ID: articleId},
-		DbIncrementStockDocument{
-			Set: DbIncrementStockBody{
-				Inc: DbUpdateStockBody{
-					Stock: -amount,
-				},
-			},
-		},
+		bson.M{"_id": articleId},
+		bson.M{
+			"$inc": bson.M{
+				"stock": -amount,
+			}},
 	)
 
+	if err != nil {
+		glog.Error(err)
+	}
+
 	return err
-}
-
-type DbIncrementStockBody struct {
-	Inc DbUpdateStockBody `bson:"$inc"`
-}
-
-type DbIncrementStockDocument struct {
-	Set DbIncrementStockBody `bson:"$set"`
 }
 
 type DbIdFilter struct {

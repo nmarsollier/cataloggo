@@ -9,7 +9,7 @@ func ProcessOrderPlaced(data *ConsumeOrderPlaced) {
 	for _, a := range data.Message.Articles {
 		art, err := article.FindById(a.ArticleId)
 		if err == nil {
-			article.DecreaseStock(art.ID, a.Quantity)
+			article.DecrementStock(art.ID, a.Quantity)
 		}
 	}
 
