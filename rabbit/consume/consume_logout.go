@@ -9,7 +9,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-//	@Summary		Mensage Rabbit
+//	@Summary		Mensage Rabbit logout
 //	@Description	Escucha de mensajes logout desde auth.
 //	@Tags			Rabbit
 //	@Accept			json
@@ -95,15 +95,16 @@ func consumeLogout() error {
 
 	go func() {
 		for d := range mgs {
-			newMessage := &logoutMessage{}
 			body := d.Body
-			glog.Info("Rabbit Consumed : ", string(body))
+			glog.Info("Incomming :", string(body))
 
+			newMessage := &logoutMessage{}
 			err = json.Unmarshal(body, newMessage)
 			if err == nil {
 				if newMessage.Type == "logout" {
 					security.Invalidate(newMessage.Message)
 				}
+				glog.Info("Consumed :", string(body))
 			} else {
 				glog.Error(err)
 			}

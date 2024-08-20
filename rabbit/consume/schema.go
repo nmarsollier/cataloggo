@@ -1,8 +1,7 @@
 package consume
 
 type ConsumeMessage struct {
-	Type     string `json:"type"`
-	Version  int    `json:"version"`
-	Queue    string `json:"queue"`
-	Exchange string `json:"exchange"`
+	Version    int    `json:"version"`
+	RoutingKey string `json:"routing_key" example:"Remote RoutingKey to Reply"`
+	Exchange   string `json:"exchange"`
 }

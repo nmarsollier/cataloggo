@@ -31,15 +31,15 @@ func getChannel() (*amqp.Channel, error) {
 	return ch, nil
 }
 
-// Emite respuestas de article-data or article-exist
+// Emite respuestas de article_exist
 //
-//	@Summary		Mensage Rabbit
-//	@Description	Emite respuestas de article-data or article-exist
+//	@Summary		Mensage Rabbit article_exist
+//	@Description	Emite respuestas de article_exist
 //	@Tags			Rabbit
 //	@Accept			json
 //	@Produce		json
-//	@Param			body	body	service.EmitArticleValidation	true	"Estructura general del mensage"
-//	@Router			/rabbit/article-data [put]
+//	@Param			body	body	service.SendArticleExist	true	"Estructura general del mensage"
+//	@Router			/rabbit/article_exist [put]
 func EmitDirect(exchange string, queue string, data interface{}) error {
 
 	chn, err := getChannel()
@@ -84,7 +84,7 @@ func EmitDirect(exchange string, queue string, data interface{}) error {
 		return err
 	}
 
-	glog.Info("Rabbit Sent : ", string(body))
+	glog.Info("Emit article_exist : ", string(body))
 
 	return nil
 }

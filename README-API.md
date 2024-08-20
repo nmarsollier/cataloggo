@@ -8,22 +8,22 @@ Nestor Marsollier
 nmarsollier@gmail.com  
 
 ---
-### /rabbit/article-data
+### /rabbit/article_exist
 
 #### GET
 ##### Summary
 
-Mensage Rabbit article-data o article-exist
+Mensage Rabbit article_exist/article_exist
 
 ##### Description
 
-Otros microservicios nos solicitan validar articulos en el catalogo, respondemos encviando direct al Exchange/Queue proporcionado.
+Otros microservicios nos solicitan validar articulos en el catalogo.
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| article-data | body | Message para Type = article-data | Yes | [service.ConsumeArticleValidation](#serviceconsumearticlevalidation) |
+| article_exist | body | Message para article_exist | Yes | [service.ConsumeArticleExist](#serviceconsumearticleexist) |
 
 ##### Responses
 
@@ -33,17 +33,17 @@ Otros microservicios nos solicitan validar articulos en el catalogo, respondemos
 #### PUT
 ##### Summary
 
-Mensage Rabbit
+Mensage Rabbit article_exist
 
 ##### Description
 
-Emite respuestas de article-data or article-exist
+Emite respuestas de article_exist
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| body | body | Estructura general del mensage | Yes | [service.EmitArticleValidation](#serviceemitarticlevalidation) |
+| body | body | Estructura general del mensage | Yes | [service.SendArticleExist](#servicesendarticleexist) |
 
 ##### Responses
 
@@ -55,7 +55,7 @@ Emite respuestas de article-data or article-exist
 #### GET
 ##### Summary
 
-Mensage Rabbit
+Mensage Rabbit logout
 
 ##### Description
 
@@ -72,22 +72,22 @@ Escucha de mensajes logout desde auth.
 | Code | Description |
 | ---- | ----------- |
 
-### /rabbit/order-placed
+### /rabbit/order_placed
 
 #### GET
 ##### Summary
 
-Mensage Rabbit order/order-placed
+Mensage Rabbit order_placed/order_placed
 
 ##### Description
 
-Cuando se recibe el mensage order-placed damos de baja al stock para reservar los articulos. Queda pendiente enviar mensaje confirmando la operacion al MS de Orders.
+Cuando se recibe el mensage order_placed damos de baja al stock para reservar los articulos. Queda pendiente enviar mensaje confirmando la operacion al MS de Orders.
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| article-data | body | Message para Type = article-data | Yes | [service.ConsumeOrderPlacedMessage](#serviceconsumeorderplacedmessage) |
+| order_placed | body | Message order_placed | Yes | [service.ConsumeOrderPlacedMessage](#serviceconsumeorderplacedmessage) |
 
 ##### Responses
 
@@ -282,16 +282,25 @@ Obtener un articulo
 | message | string |  | No |
 | path | string |  | No |
 
-#### service.ConsumeArticleValidation
+#### service.ArticleExistMessage
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| articleId | string | *Example:* `"ArticleId"` | No |
+| price | number |  | No |
+| referenceId | string | *Example:* `"Remote Reference Id"` | No |
+| stock | integer |  | No |
+| valid | boolean |  | No |
+
+#### service.ConsumeArticleExist
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | exchange | string | *Example:* `"Remote Exchange to Reply"` | No |
-| message | [service.ConsumeArticleValidationMessage](#serviceconsumearticlevalidationmessage) |  | No |
-| queue | string | *Example:* `"Remote Queue to Reply"` | No |
-| type | string | *Example:* `"article-data"` | No |
+| message | [service.ConsumeArticleExistMessage](#serviceconsumearticleexistmessage) |  | No |
+| routing_key | string | *Example:* `"Remote RoutingKey to Reply"` | No |
 
-#### service.ConsumeArticleValidationMessage
+#### service.ConsumeArticleExistMessage
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -313,12 +322,8 @@ Obtener un articulo
 | cartId | string |  | No |
 | orderId | string |  | No |
 
-#### service.EmitArticleValidation
+#### service.SendArticleExist
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| articleId | string | *Example:* `"ArticleId"` | No |
-| price | number |  | No |
-| referenceId | string | *Example:* `"Remote Reference Id"` | No |
-| stock | integer |  | No |
-| valid | boolean |  | No |
+| message | [service.ArticleExistMessage](#servicearticleexistmessage) |  | No |

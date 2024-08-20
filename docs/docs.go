@@ -18,9 +18,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/rabbit/article-data": {
+        "/rabbit/article_exist": {
             "get": {
-                "description": "Otros microservicios nos solicitan validar articulos en el catalogo, respondemos encviando direct al Exchange/Queue proporcionado.",
+                "description": "Otros microservicios nos solicitan validar articulos en el catalogo.",
                 "consumes": [
                     "application/json"
                 ],
@@ -30,22 +30,22 @@ const docTemplate = `{
                 "tags": [
                     "Rabbit"
                 ],
-                "summary": "Mensage Rabbit article-data o article-exist",
+                "summary": "Mensage Rabbit article_exist/article_exist",
                 "parameters": [
                     {
-                        "description": "Message para Type = article-data",
-                        "name": "article-data",
+                        "description": "Message para article_exist",
+                        "name": "article_exist",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.ConsumeArticleValidation"
+                            "$ref": "#/definitions/service.ConsumeArticleExist"
                         }
                     }
                 ],
                 "responses": {}
             },
             "put": {
-                "description": "Emite respuestas de article-data or article-exist",
+                "description": "Emite respuestas de article_exist",
                 "consumes": [
                     "application/json"
                 ],
@@ -55,7 +55,7 @@ const docTemplate = `{
                 "tags": [
                     "Rabbit"
                 ],
-                "summary": "Mensage Rabbit",
+                "summary": "Mensage Rabbit article_exist",
                 "parameters": [
                     {
                         "description": "Estructura general del mensage",
@@ -63,7 +63,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.EmitArticleValidation"
+                            "$ref": "#/definitions/service.SendArticleExist"
                         }
                     }
                 ],
@@ -82,7 +82,7 @@ const docTemplate = `{
                 "tags": [
                     "Rabbit"
                 ],
-                "summary": "Mensage Rabbit",
+                "summary": "Mensage Rabbit logout",
                 "parameters": [
                     {
                         "description": "Estructura general del mensage",
@@ -97,9 +97,9 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/rabbit/order-placed": {
+        "/rabbit/order_placed": {
             "get": {
-                "description": "Cuando se recibe el mensage order-placed damos de baja al stock para reservar los articulos. Queda pendiente enviar mensaje confirmando la operacion al MS de Orders.",
+                "description": "Cuando se recibe el mensage order_placed damos de baja al stock para reservar los articulos. Queda pendiente enviar mensaje confirmando la operacion al MS de Orders.",
                 "consumes": [
                     "application/json"
                 ],
@@ -109,11 +109,11 @@ const docTemplate = `{
                 "tags": [
                     "Rabbit"
                 ],
-                "summary": "Mensage Rabbit order/order-placed",
+                "summary": "Mensage Rabbit order_placed/order_placed",
                 "parameters": [
                     {
-                        "description": "Message para Type = article-data",
-                        "name": "article-data",
+                        "description": "Message order_placed",
+                        "name": "order_placed",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -543,7 +543,29 @@ const docTemplate = `{
                 }
             }
         },
-        "service.ConsumeArticleValidation": {
+        "service.ArticleExistMessage": {
+            "type": "object",
+            "properties": {
+                "articleId": {
+                    "type": "string",
+                    "example": "ArticleId"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "referenceId": {
+                    "type": "string",
+                    "example": "Remote Reference Id"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "valid": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "service.ConsumeArticleExist": {
             "type": "object",
             "properties": {
                 "exchange": {
@@ -551,19 +573,15 @@ const docTemplate = `{
                     "example": "Remote Exchange to Reply"
                 },
                 "message": {
-                    "$ref": "#/definitions/service.ConsumeArticleValidationMessage"
+                    "$ref": "#/definitions/service.ConsumeArticleExistMessage"
                 },
-                "queue": {
+                "routing_key": {
                     "type": "string",
-                    "example": "Remote Queue to Reply"
-                },
-                "type": {
-                    "type": "string",
-                    "example": "article-data"
+                    "example": "Remote RoutingKey to Reply"
                 }
             }
         },
-        "service.ConsumeArticleValidationMessage": {
+        "service.ConsumeArticleExistMessage": {
             "type": "object",
             "properties": {
                 "articleId": {
@@ -604,25 +622,11 @@ const docTemplate = `{
                 }
             }
         },
-        "service.EmitArticleValidation": {
+        "service.SendArticleExist": {
             "type": "object",
             "properties": {
-                "articleId": {
-                    "type": "string",
-                    "example": "ArticleId"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "referenceId": {
-                    "type": "string",
-                    "example": "Remote Reference Id"
-                },
-                "stock": {
-                    "type": "integer"
-                },
-                "valid": {
-                    "type": "boolean"
+                "message": {
+                    "$ref": "#/definitions/service.ArticleExistMessage"
                 }
             }
         }

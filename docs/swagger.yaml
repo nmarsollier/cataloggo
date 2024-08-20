@@ -70,21 +70,33 @@ definitions:
       path:
         type: string
     type: object
-  service.ConsumeArticleValidation:
+  service.ArticleExistMessage:
+    properties:
+      articleId:
+        example: ArticleId
+        type: string
+      price:
+        type: number
+      referenceId:
+        example: Remote Reference Id
+        type: string
+      stock:
+        type: integer
+      valid:
+        type: boolean
+    type: object
+  service.ConsumeArticleExist:
     properties:
       exchange:
         example: Remote Exchange to Reply
         type: string
       message:
-        $ref: '#/definitions/service.ConsumeArticleValidationMessage'
-      queue:
-        example: Remote Queue to Reply
-        type: string
-      type:
-        example: article-data
+        $ref: '#/definitions/service.ConsumeArticleExistMessage'
+      routing_key:
+        example: Remote RoutingKey to Reply
         type: string
     type: object
-  service.ConsumeArticleValidationMessage:
+  service.ConsumeArticleExistMessage:
     properties:
       articleId:
         example: ArticleId
@@ -111,20 +123,10 @@ definitions:
       orderId:
         type: string
     type: object
-  service.EmitArticleValidation:
+  service.SendArticleExist:
     properties:
-      articleId:
-        example: ArticleId
-        type: string
-      price:
-        type: number
-      referenceId:
-        example: Remote Reference Id
-        type: string
-      stock:
-        type: integer
-      valid:
-        type: boolean
+      message:
+        $ref: '#/definitions/service.ArticleExistMessage'
     type: object
 host: localhost:3002
 info:
@@ -135,40 +137,39 @@ info:
   title: CatalogGo
   version: "1.0"
 paths:
-  /rabbit/article-data:
+  /rabbit/article_exist:
     get:
       consumes:
       - application/json
-      description: Otros microservicios nos solicitan validar articulos en el catalogo,
-        respondemos encviando direct al Exchange/Queue proporcionado.
+      description: Otros microservicios nos solicitan validar articulos en el catalogo.
       parameters:
-      - description: Message para Type = article-data
+      - description: Message para article_exist
         in: body
-        name: article-data
+        name: article_exist
         required: true
         schema:
-          $ref: '#/definitions/service.ConsumeArticleValidation'
+          $ref: '#/definitions/service.ConsumeArticleExist'
       produces:
       - application/json
       responses: {}
-      summary: Mensage Rabbit article-data o article-exist
+      summary: Mensage Rabbit article_exist/article_exist
       tags:
       - Rabbit
     put:
       consumes:
       - application/json
-      description: Emite respuestas de article-data or article-exist
+      description: Emite respuestas de article_exist
       parameters:
       - description: Estructura general del mensage
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/service.EmitArticleValidation'
+          $ref: '#/definitions/service.SendArticleExist'
       produces:
       - application/json
       responses: {}
-      summary: Mensage Rabbit
+      summary: Mensage Rabbit article_exist
       tags:
       - Rabbit
   /rabbit/logout:
@@ -186,27 +187,27 @@ paths:
       produces:
       - application/json
       responses: {}
-      summary: Mensage Rabbit
+      summary: Mensage Rabbit logout
       tags:
       - Rabbit
-  /rabbit/order-placed:
+  /rabbit/order_placed:
     get:
       consumes:
       - application/json
-      description: Cuando se recibe el mensage order-placed damos de baja al stock
+      description: Cuando se recibe el mensage order_placed damos de baja al stock
         para reservar los articulos. Queda pendiente enviar mensaje confirmando la
         operacion al MS de Orders.
       parameters:
-      - description: Message para Type = article-data
+      - description: Message order_placed
         in: body
-        name: article-data
+        name: order_placed
         required: true
         schema:
           $ref: '#/definitions/service.ConsumeOrderPlacedMessage'
       produces:
       - application/json
       responses: {}
-      summary: Mensage Rabbit order/order-placed
+      summary: Mensage Rabbit order_placed/order_placed
       tags:
       - Rabbit
   /v1/articles:

@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/golang/glog"
 	"github.com/nmarsollier/cataloggo/article"
 )
 
@@ -12,16 +11,12 @@ func ProcessOrderPlaced(data *ConsumeOrderPlaced) {
 			article.DecrementStock(art.ID, a.Quantity)
 		}
 	}
-
-	// TODO: Enviar mensaje al MS de orders para confirmar que se dio de baja al stock.
-	glog.Info("Order Placed processed : ", data)
 }
 
 type ConsumeOrderPlaced struct {
-	Type     string `json:"type" example:"order-placed"`
-	Queue    string `json:"queue" example:"order-placed"`
-	Exchange string `json:"exchange" example:"order-placed"`
-	Message  *ConsumeOrderPlacedMessage
+	RoutingKey string `json:"routing_key" example:"Remote RoutingKey to Reply"`
+	Exchange   string `json:"exchange" example:"order-placed"`
+	Message    *ConsumeOrderPlacedMessage
 }
 
 type ConsumeOrderPlacedMessage struct {

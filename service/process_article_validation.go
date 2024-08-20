@@ -1,17 +1,13 @@
 package service
 
 import (
-	"github.com/golang/glog"
 	"github.com/nmarsollier/cataloggo/article"
 	"github.com/nmarsollier/cataloggo/rabbit/emit"
 )
 
-func ProcessArticleData(data *ConsumeArticleValidation) {
-	response := &SendValidationMessage{
-		Type:     data.Type,
-		Exchange: data.Exchange,
-		Queue:    data.Queue,
-		Message: EmitArticleValidation{
+func ProcessArticleData(data *ConsumeArticleExist) {
+	response := &SendArticleExist{
+		Message: ArticleExistMessage{
 			ArticleId:   data.Message.ArticleId,
 			ReferenceId: data.Message.ReferenceId,
 			Valid:       false,
@@ -19,23 +15,21 @@ func ProcessArticleData(data *ConsumeArticleValidation) {
 	}
 	article, err := article.FindById(data.Message.ArticleId)
 	if err != nil {
-		emit.EmitDirect(data.Exchange, data.Queue, response)
+		emit.EmitDirect(data.Exchange, data.RoutingKey, response)
 		return
 	}
 
-	response.Message = EmitArticleValidation{
+	response.Message = ArticleExistMessage{
 		ArticleId:   data.Message.ArticleId,
 		ReferenceId: data.Message.ReferenceId,
 		Stock:       article.Stock,
 		Price:       article.Price,
 		Valid:       article.Enabled,
 	}
-	emit.EmitDirect(data.Exchange, data.Queue, response)
-
-	glog.Info("Article validation completed : ", data)
+	emit.EmitDirect(data.Exchange, data.RoutingKey, response)
 }
 
-type EmitArticleValidation struct {
+type ArticleExistMessage struct {
 	ArticleId   string  `json:"articleId" example:"ArticleId" `
 	Price       float32 `json:"price"`
 	ReferenceId string  `json:"referenceId" example:"Remote Reference Id"`
@@ -43,22 +37,17 @@ type EmitArticleValidation struct {
 	Valid       bool    `json:"valid"`
 }
 
-type ConsumeArticleValidation struct {
-	Type     string `json:"type" example:"article-data" `
-	Queue    string `json:"queue" example:"Remote Queue to Reply" `
-	Exchange string `json:"exchange" example:"Remote Exchange to Reply"`
-	Message  *ConsumeArticleValidationMessage
+type SendArticleExist struct {
+	Message ArticleExistMessage `json:"message"`
 }
 
-type SendValidationMessage struct {
-	Type     string      `json:"type" example:"article-exist"`
-	Exchange string      `json:"exchange" example:"cart"`
-	Queue    string      `json:"queue" example:"cart"`
-	Message  interface{} `json:"message"`
+type ConsumeArticleExist struct {
+	RoutingKey string `json:"routing_key" example:"Remote RoutingKey to Reply"`
+	Exchange   string `json:"exchange" example:"Remote Exchange to Reply"`
+	Message    *ConsumeArticleExistMessage
 }
 
-type ConsumeArticleValidationMessage struct {
+type ConsumeArticleExistMessage struct {
 	ReferenceId string `json:"referenceId" example:"Remote Reference Object Id"`
-
-	ArticleId string `json:"articleId" example:"ArticleId"`
+	ArticleId   string `json:"articleId" example:"ArticleId"`
 }

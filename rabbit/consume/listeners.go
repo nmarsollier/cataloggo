@@ -9,7 +9,7 @@ import (
 func Init() {
 	go func() {
 		for {
-			err := consumeOrders()
+			err := consumeArticleExist()
 			if err != nil {
 				glog.Error(err)
 			}

@@ -9,13 +9,13 @@ import (
 	"github.com/streadway/amqp"
 )
 
-//	@Summary		Mensage Rabbit order/order-placed
-//	@Description	Cuando se recibe el mensage order-placed damos de baja al stock para reservar los articulos. Queda pendiente enviar mensaje confirmando la operacion al MS de Orders.
+//	@Summary		Mensage Rabbit order_placed/order_placed
+//	@Description	Cuando se recibe el mensage order_placed damos de baja al stock para reservar los articulos. Queda pendiente enviar mensaje confirmando la operacion al MS de Orders.
 //	@Tags			Rabbit
 //	@Accept			json
 //	@Produce		json
-//	@Param			article-data	body	service.ConsumeOrderPlacedMessage	true	"Message para Type = article-data"
-//	@Router			/rabbit/order-placed [get]
+//	@Param			order_placed	body	service.ConsumeOrderPlacedMessage	true	"Message order_placed"
+//	@Router			/rabbit/order_placed [get]
 //
 // Consume Order Placed
 func consumeOrderPlaced() error {
@@ -73,7 +73,7 @@ func consumeOrderPlaced() error {
 	mgs, err := chn.Consume(
 		queue.Name, // queue
 		"",         // consumer
-		true,       // auto-ack
+		false,      // auto-ack
 		false,      // exclusive
 		false,      // no-local
 		false,      // no-wait
@@ -88,21 +88,18 @@ func consumeOrderPlaced() error {
 
 	go func() {
 		for d := range mgs {
-			newMessage := &ConsumeMessage{}
 			body := d.Body
-			glog.Info("Rabbit Consumed : ", string(body))
+			glog.Info("Incomming order_placed :", string(body))
 
-			err = json.Unmarshal(body, newMessage)
+			articleMessage := &service.ConsumeOrderPlaced{}
+			err = json.Unmarshal(body, articleMessage)
 			if err == nil {
-				switch newMessage.Type {
-				case "order-placed":
-					articleMessage := &service.ConsumeOrderPlaced{}
-					if err := json.Unmarshal(body, articleMessage); err != nil {
-						glog.Error(err)
-						return
-					}
+				service.ProcessOrderPlaced(articleMessage)
 
-					service.ProcessOrderPlaced(articleMessage)
+				if err := d.Ack(false); err != nil {
+					glog.Info("Failed ACK order_placed :", string(body), err)
+				} else {
+					glog.Info("Consumed order_placed :", string(body))
 				}
 			} else {
 				glog.Error(err)

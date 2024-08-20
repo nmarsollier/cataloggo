@@ -9,16 +9,16 @@ import (
 	"github.com/streadway/amqp"
 )
 
-//	@Summary		Mensage Rabbit article-data o article-exist
-//	@Description	Otros microservicios nos solicitan validar articulos en el catalogo, respondemos encviando direct al Exchange/Queue proporcionado.
+//	@Summary		Mensage Rabbit article_exist/article_exist
+//	@Description	Otros microservicios nos solicitan validar articulos en el catalogo.
 //	@Tags			Rabbit
 //	@Accept			json
 //	@Produce		json
-//	@Param			article-data	body	service.ConsumeArticleValidation	true	"Message para Type = article-data"
-//	@Router			/rabbit/article-data [get]
+//	@Param			article_exist	body	service.ConsumeArticleExist	true	"Message para article_exist"
+//	@Router			/rabbit/article_exist [get]
 //
 // Validar Artículos
-func consumeOrders() error {
+func consumeArticleExist() error {
 	conn, err := amqp.Dial(env.Get().RabbitURL)
 	if err != nil {
 		glog.Error(err)
@@ -36,13 +36,13 @@ func consumeOrders() error {
 	defer chn.Close()
 
 	err = chn.ExchangeDeclare(
-		"catalog", // name
-		"direct",  // type
-		false,     // durable
-		false,     // auto-deleted
-		false,     // internal
-		false,     // no-wait
-		nil,       // arguments
+		"article_exist", // name
+		"direct",        // type
+		false,           // durable
+		false,           // auto-deleted
+		false,           // internal
+		false,           // no-wait
+		nil,             // arguments
 	)
 	if err != nil {
 		glog.Error(err)
@@ -51,12 +51,12 @@ func consumeOrders() error {
 	}
 
 	queue, err := chn.QueueDeclare(
-		"catalog", // name
-		false,     // durable
-		false,     // delete when unused
-		false,     // exclusive
-		false,     // no-wait
-		nil,       // arguments
+		"catalog_article_exist", // name
+		false,                   // durable
+		false,                   // delete when unused
+		false,                   // exclusive
+		false,                   // no-wait
+		nil,                     // arguments
 	)
 	if err != nil {
 		glog.Error(err)
@@ -65,9 +65,9 @@ func consumeOrders() error {
 	}
 
 	err = chn.QueueBind(
-		queue.Name, // queue name
-		"catalog",  // routing key
-		"catalog",  // exchange
+		queue.Name,      // queue name
+		"article_exist", // routing key
+		"article_exist", // exchange
 		false,
 		nil)
 	if err != nil {
@@ -79,7 +79,7 @@ func consumeOrders() error {
 	mgs, err := chn.Consume(
 		queue.Name, // queue
 		"",         // consumer
-		true,       // auto-ack
+		false,      // auto-ack
 		false,      // exclusive
 		false,      // no-local
 		false,      // no-wait
@@ -95,17 +95,18 @@ func consumeOrders() error {
 
 	go func() {
 		for d := range mgs {
-			newMessage := &service.ConsumeArticleValidation{}
 			body := d.Body
-			glog.Info("Rabbit Consumed : ", string(body))
+			glog.Info("Incomming article_exist :", string(body))
 
+			newMessage := &service.ConsumeArticleExist{}
 			err = json.Unmarshal(body, newMessage)
 			if err == nil {
-				switch newMessage.Type {
-				case "article-data":
-					service.ProcessArticleData(newMessage)
-				case "article-exist":
-					service.ProcessArticleData(newMessage)
+				service.ProcessArticleData(newMessage)
+
+				if err := d.Ack(false); err != nil {
+					glog.Info("Failed ACK article_exist :", string(body), err)
+				} else {
+					glog.Info("Consumed article_exist :", string(body))
 				}
 			} else {
 				glog.Error(err)
