@@ -38,7 +38,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.ConsumeArticleExist"
+                            "$ref": "#/definitions/rschema.ConsumeArticleExist"
                         }
                     }
                 ],
@@ -63,7 +63,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.SendArticleExist"
+                            "$ref": "#/definitions/rschema.SendArticleExist"
                         }
                     }
                 ],
@@ -503,13 +503,13 @@ const docTemplate = `{
         "consume.logoutMessage": {
             "type": "object",
             "properties": {
+                "correlation_id": {
+                    "type": "string",
+                    "example": "123123"
+                },
                 "message": {
                     "type": "string",
                     "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg"
-                },
-                "type": {
-                    "type": "string",
-                    "example": "logout"
                 }
             }
         },
@@ -543,7 +543,7 @@ const docTemplate = `{
                 }
             }
         },
-        "service.ArticleExistMessage": {
+        "rschema.ArticleExistMessage": {
             "type": "object",
             "properties": {
                 "articleId": {
@@ -565,15 +565,19 @@ const docTemplate = `{
                 }
             }
         },
-        "service.ConsumeArticleExist": {
+        "rschema.ConsumeArticleExist": {
             "type": "object",
             "properties": {
+                "correlation_id": {
+                    "type": "string",
+                    "example": "123123"
+                },
                 "exchange": {
                     "type": "string",
                     "example": "Remote Exchange to Reply"
                 },
                 "message": {
-                    "$ref": "#/definitions/service.ConsumeArticleExistMessage"
+                    "$ref": "#/definitions/rschema.ConsumeArticleExistMessage"
                 },
                 "routing_key": {
                     "type": "string",
@@ -581,7 +585,7 @@ const docTemplate = `{
                 }
             }
         },
-        "service.ConsumeArticleExistMessage": {
+        "rschema.ConsumeArticleExistMessage": {
             "type": "object",
             "properties": {
                 "articleId": {
@@ -591,6 +595,18 @@ const docTemplate = `{
                 "referenceId": {
                     "type": "string",
                     "example": "Remote Reference Object Id"
+                }
+            }
+        },
+        "rschema.SendArticleExist": {
+            "type": "object",
+            "properties": {
+                "correlation_id": {
+                    "type": "string",
+                    "example": "123123"
+                },
+                "message": {
+                    "$ref": "#/definitions/rschema.ArticleExistMessage"
                 }
             }
         },
@@ -619,14 +635,6 @@ const docTemplate = `{
                 },
                 "orderId": {
                     "type": "string"
-                }
-            }
-        },
-        "service.SendArticleExist": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "$ref": "#/definitions/service.ArticleExistMessage"
                 }
             }
         }

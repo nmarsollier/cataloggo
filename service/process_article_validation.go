@@ -3,51 +3,25 @@ package service
 import (
 	"github.com/nmarsollier/cataloggo/article"
 	"github.com/nmarsollier/cataloggo/rabbit/emit"
+	"github.com/nmarsollier/cataloggo/rabbit/rschema"
 )
 
-func ProcessArticleData(data *ConsumeArticleExist) {
-	response := &SendArticleExist{
-		Message: ArticleExistMessage{
+func ProcessArticleData(data *rschema.ConsumeArticleExist, ctx ...interface{}) {
+	article, err := article.FindById(data.Message.ArticleId, ctx...)
+	if err != nil {
+		emit.EmitArticleExist(data.Exchange, data.RoutingKey, &rschema.ArticleExistMessage{
 			ArticleId:   data.Message.ArticleId,
 			ReferenceId: data.Message.ReferenceId,
 			Valid:       false,
-		},
-	}
-	article, err := article.FindById(data.Message.ArticleId)
-	if err != nil {
-		emit.EmitDirect(data.Exchange, data.RoutingKey, response)
+		}, ctx...)
 		return
 	}
 
-	response.Message = ArticleExistMessage{
+	emit.EmitArticleExist(data.Exchange, data.RoutingKey, &rschema.ArticleExistMessage{
 		ArticleId:   data.Message.ArticleId,
 		ReferenceId: data.Message.ReferenceId,
 		Stock:       article.Stock,
 		Price:       article.Price,
 		Valid:       article.Enabled,
-	}
-	emit.EmitDirect(data.Exchange, data.RoutingKey, response)
-}
-
-type ArticleExistMessage struct {
-	ArticleId   string  `json:"articleId" example:"ArticleId" `
-	Price       float32 `json:"price"`
-	ReferenceId string  `json:"referenceId" example:"Remote Reference Id"`
-	Stock       int     `json:"stock"`
-	Valid       bool    `json:"valid"`
-}
-
-type SendArticleExist struct {
-	Message ArticleExistMessage `json:"message"`
-}
-
-type ConsumeArticleExist struct {
-	RoutingKey string `json:"routing_key" example:"Remote RoutingKey to Reply"`
-	Exchange   string `json:"exchange" example:"Remote Exchange to Reply"`
-	Message    *ConsumeArticleExistMessage
-}
-
-type ConsumeArticleExistMessage struct {
-	ReferenceId string `json:"referenceId" example:"Remote Reference Object Id"`
-	ArticleId   string `json:"articleId" example:"ArticleId"`
+	}, ctx...)
 }

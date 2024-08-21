@@ -4,19 +4,20 @@ import (
 	"github.com/nmarsollier/cataloggo/article"
 )
 
-func ProcessOrderPlaced(data *ConsumeOrderPlaced) {
+func ProcessOrderPlaced(data *ConsumeOrderPlaced, ctx ...interface{}) {
 	for _, a := range data.Message.Articles {
-		art, err := article.FindById(a.ArticleId)
+		art, err := article.FindById(a.ArticleId, ctx...)
 		if err == nil {
-			article.DecrementStock(art.ID, a.Quantity)
+			article.DecrementStock(art.ID, a.Quantity, ctx...)
 		}
 	}
 }
 
 type ConsumeOrderPlaced struct {
-	RoutingKey string `json:"routing_key" example:"Remote RoutingKey to Reply"`
-	Exchange   string `json:"exchange" example:"order-placed"`
-	Message    *ConsumeOrderPlacedMessage
+	CorrelationId string `json:"correlation_id" example:"123123" `
+	RoutingKey    string `json:"routing_key" example:"Remote RoutingKey to Reply"`
+	Exchange      string `json:"exchange" example:"order-placed"`
+	Message       *ConsumeOrderPlacedMessage
 }
 
 type ConsumeOrderPlacedMessage struct {

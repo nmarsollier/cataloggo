@@ -6,9 +6,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func FindById(id string) (*ArticleData, error) {
+func FindById(id string, ctx ...interface{}) (*ArticleData, error) {
 
-	article, err := findById(id)
+	article, err := findById(id, ctx...)
 	if err != nil {
 		return nil, err
 	}
@@ -16,8 +16,8 @@ func FindById(id string) (*ArticleData, error) {
 	return toArticleData(article), nil
 }
 
-func FindByCriteria(criteria string) ([]*ArticleData, error) {
-	articles, err := findByCriteria(criteria)
+func FindByCriteria(criteria string, ctx ...interface{}) ([]*ArticleData, error) {
+	articles, err := findByCriteria(criteria, ctx...)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func FindByCriteria(criteria string) ([]*ArticleData, error) {
 	return result, nil
 }
 
-func CreateArticle(articleData *NewArticleData) (*ArticleData, error) {
+func CreateArticle(articleData *NewArticleData, ctx ...interface{}) (*ArticleData, error) {
 	article, err := insert(&Article{
 		ID: primitive.NewObjectID(),
 		Description: Description{
@@ -43,7 +43,7 @@ func CreateArticle(articleData *NewArticleData) (*ArticleData, error) {
 		Enabled: true,
 		Created: time.Now(),
 		Updated: time.Now(),
-	})
+	}, ctx...)
 
 	if err != nil {
 		return nil, err
@@ -51,24 +51,24 @@ func CreateArticle(articleData *NewArticleData) (*ArticleData, error) {
 	return toArticleData(article), nil
 }
 
-func UpdateArticle(articleId string, articleData *NewArticleData) error {
+func UpdateArticle(articleId string, articleData *NewArticleData, ctx ...interface{}) error {
 	err := updateDescription(articleId, Description{
 		Name:        articleData.Name,
 		Description: articleData.Description,
 		Image:       articleData.Image,
-	})
+	}, ctx...)
 
 	if err != nil {
 		return err
 	}
 
-	err = updateStock(articleId, articleData.Stock)
+	err = updateStock(articleId, articleData.Stock, ctx...)
 
 	if err != nil {
 		return err
 	}
 
-	err = updatePrice(articleId, articleData.Price)
+	err = updatePrice(articleId, articleData.Price, ctx...)
 
 	if err != nil {
 		return err

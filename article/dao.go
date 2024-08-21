@@ -3,7 +3,7 @@ package article
 import (
 	"context"
 
-	"github.com/golang/glog"
+	"github.com/nmarsollier/cataloggo/log"
 	"github.com/nmarsollier/cataloggo/tools/db"
 	"github.com/nmarsollier/cataloggo/tools/errs"
 	"go.mongodb.org/mongo-driver/bson"
@@ -16,14 +16,14 @@ var ErrID = errs.NewValidation().Add("id", "Invalid")
 // Define mongo Collection
 var collection *mongo.Collection
 
-func dbCollection() (*mongo.Collection, error) {
+func dbCollection(ctx ...interface{}) (*mongo.Collection, error) {
 	if collection != nil {
 		return collection, nil
 	}
 
-	database, err := db.Get()
+	database, err := db.Get(ctx...)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return nil, err
 	}
@@ -34,10 +34,10 @@ func dbCollection() (*mongo.Collection, error) {
 	return collection, nil
 }
 
-func findByCriteria(criteria string) ([]*Article, error) {
-	var collection, err = dbCollection()
+func findByCriteria(criteria string, ctx ...interface{}) ([]*Article, error) {
+	var collection, err = dbCollection(ctx...)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func findByCriteria(criteria string) ([]*Article, error) {
 
 	cur, err := collection.Find(context.Background(), filter)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func findByCriteria(criteria string) ([]*Article, error) {
 	for cur.Next(context.Background()) {
 		article := &Article{}
 		if err := cur.Decode(article); err != nil {
-			glog.Error(err)
+			log.Get(ctx...).Error(err)
 
 			return nil, err
 		}
@@ -80,17 +80,17 @@ type DBCriteriaElement struct {
 	Options string `bson:"$options"`
 }
 
-func findById(articleId string) (*Article, error) {
-	var collection, err = dbCollection()
+func findById(articleId string, ctx ...interface{}) (*Article, error) {
+	var collection, err = dbCollection(ctx...)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return nil, err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return nil, ErrID
 	}
@@ -99,7 +99,7 @@ func findById(articleId string) (*Article, error) {
 	filter := DbIdFilter{ID: _id}
 
 	if err = collection.FindOne(context.Background(), filter).Decode(article); err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return nil, err
 	}
@@ -107,22 +107,22 @@ func findById(articleId string) (*Article, error) {
 	return article, nil
 }
 
-func insert(article *Article) (*Article, error) {
+func insert(article *Article, ctx ...interface{}) (*Article, error) {
 	if err := article.ValidateSchema(); err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return nil, err
 	}
 
-	var collection, err = dbCollection()
+	var collection, err = dbCollection(ctx...)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return nil, err
 	}
 
 	if _, err = collection.InsertOne(context.Background(), article); err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return nil, err
 	}
@@ -131,17 +131,17 @@ func insert(article *Article) (*Article, error) {
 }
 
 // disable Deshabilita el articulo para que no se pueda usar mas
-func Disable(articleId string) error {
-	var collection, err = dbCollection()
+func Disable(articleId string, ctx ...interface{}) error {
+	var collection, err = dbCollection(ctx...)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return ErrID
 	}
@@ -167,17 +167,17 @@ type DbEnableBody struct {
 }
 
 // Actualiza la descripción de un articulo.
-func updateDescription(articleId string, description Description) error {
-	var collection, err = dbCollection()
+func updateDescription(articleId string, description Description, ctx ...interface{}) error {
+	var collection, err = dbCollection(ctx...)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return ErrID
 	}
@@ -202,17 +202,17 @@ type DbUpdateDescriptionBody struct {
 }
 
 // Actualiza el precio de un articulo.
-func updatePrice(articleId string, price float32) error {
-	var collection, err = dbCollection()
+func updatePrice(articleId string, price float32, ctx ...interface{}) error {
+	var collection, err = dbCollection(ctx...)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return ErrID
 	}
@@ -237,17 +237,17 @@ type DbUpdatePriceBody struct {
 }
 
 // Actualiza el stock de un articulo.
-func updateStock(articleId string, stock int) error {
-	var collection, err = dbCollection()
+func updateStock(articleId string, stock int, ctx ...interface{}) error {
+	var collection, err = dbCollection(ctx...)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return ErrID
 	}
@@ -260,7 +260,7 @@ func updateStock(articleId string, stock int) error {
 		},
 	)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 	}
 
 	return err
@@ -270,10 +270,10 @@ type DbUpdateStockDocument struct {
 	Set DbUpdateStockBody `bson:"$set"`
 }
 
-func DecrementStock(articleId primitive.ObjectID, amount int) error {
-	var collection, err = dbCollection()
+func DecrementStock(articleId primitive.ObjectID, amount int, ctx ...interface{}) error {
+	var collection, err = dbCollection(ctx...)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 
 		return err
 	}
@@ -287,7 +287,7 @@ func DecrementStock(articleId primitive.ObjectID, amount int) error {
 	)
 
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 	}
 
 	return err

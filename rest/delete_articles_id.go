@@ -31,8 +31,9 @@ func init() {
 
 func deleteArticle(c *gin.Context) {
 	articleId := c.Param("articleId")
+	ctx := engine.GinCtx(c)
 
-	err := article.Disable(articleId)
+	err := article.Disable(articleId, ctx...)
 	if err != nil {
 		engine.AbortWithError(c, err)
 		return

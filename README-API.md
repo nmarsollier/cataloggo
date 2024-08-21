@@ -23,7 +23,7 @@ Otros microservicios nos solicitan validar articulos en el catalogo.
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| article_exist | body | Message para article_exist | Yes | [service.ConsumeArticleExist](#serviceconsumearticleexist) |
+| article_exist | body | Message para article_exist | Yes | [rschema.ConsumeArticleExist](#rschemaconsumearticleexist) |
 
 ##### Responses
 
@@ -43,7 +43,7 @@ Emite respuestas de article_exist
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| body | body | Estructura general del mensage | Yes | [service.SendArticleExist](#servicesendarticleexist) |
+| body | body | Estructura general del mensage | Yes | [rschema.SendArticleExist](#rschemasendarticleexist) |
 
 ##### Responses
 
@@ -260,8 +260,8 @@ Obtener un articulo
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
+| correlation_id | string | *Example:* `"123123"` | No |
 | message | string | *Example:* `"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg"` | No |
-| type | string | *Example:* `"logout"` | No |
 
 #### engine.ErrorData
 
@@ -282,7 +282,7 @@ Obtener un articulo
 | message | string |  | No |
 | path | string |  | No |
 
-#### service.ArticleExistMessage
+#### rschema.ArticleExistMessage
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -292,20 +292,28 @@ Obtener un articulo
 | stock | integer |  | No |
 | valid | boolean |  | No |
 
-#### service.ConsumeArticleExist
+#### rschema.ConsumeArticleExist
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
+| correlation_id | string | *Example:* `"123123"` | No |
 | exchange | string | *Example:* `"Remote Exchange to Reply"` | No |
-| message | [service.ConsumeArticleExistMessage](#serviceconsumearticleexistmessage) |  | No |
+| message | [rschema.ConsumeArticleExistMessage](#rschemaconsumearticleexistmessage) |  | No |
 | routing_key | string | *Example:* `"Remote RoutingKey to Reply"` | No |
 
-#### service.ConsumeArticleExistMessage
+#### rschema.ConsumeArticleExistMessage
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | articleId | string | *Example:* `"ArticleId"` | No |
 | referenceId | string | *Example:* `"Remote Reference Object Id"` | No |
+
+#### rschema.SendArticleExist
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| correlation_id | string | *Example:* `"123123"` | No |
+| message | [rschema.ArticleExistMessage](#rschemaarticleexistmessage) |  | No |
 
 #### service.ConsumeOrderPlacedArticle
 
@@ -321,9 +329,3 @@ Obtener un articulo
 | articles | [ [service.ConsumeOrderPlacedArticle](#serviceconsumeorderplacedarticle) ] |  | No |
 | cartId | string |  | No |
 | orderId | string |  | No |
-
-#### service.SendArticleExist
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| message | [service.ArticleExistMessage](#servicearticleexistmessage) |  | No |

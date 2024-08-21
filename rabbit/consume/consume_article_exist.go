@@ -3,9 +3,11 @@ package consume
 import (
 	"encoding/json"
 
-	"github.com/golang/glog"
+	"github.com/nmarsollier/cataloggo/log"
+	"github.com/nmarsollier/cataloggo/rabbit/rschema"
 	"github.com/nmarsollier/cataloggo/service"
 	"github.com/nmarsollier/cataloggo/tools/env"
+	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
 )
 
@@ -14,14 +16,19 @@ import (
 //	@Tags			Rabbit
 //	@Accept			json
 //	@Produce		json
-//	@Param			article_exist	body	service.ConsumeArticleExist	true	"Message para article_exist"
+//	@Param			article_exist	body	rschema.ConsumeArticleExist	true	"Message para article_exist"
 //	@Router			/rabbit/article_exist [get]
 //
 // Validar Artículos
 func consumeArticleExist() error {
+	logger := log.Get().
+		WithField("Controller", "Rabbit").
+		WithField("Queue", "article_exist").
+		WithField("Method", "Consume")
+
 	conn, err := amqp.Dial(env.Get().RabbitURL)
 	if err != nil {
-		glog.Error(err)
+		logger.Error(err)
 
 		return err
 	}
@@ -29,7 +36,7 @@ func consumeArticleExist() error {
 
 	chn, err := conn.Channel()
 	if err != nil {
-		glog.Error(err)
+		logger.Error(err)
 
 		return err
 	}
@@ -45,7 +52,7 @@ func consumeArticleExist() error {
 		nil,             // arguments
 	)
 	if err != nil {
-		glog.Error(err)
+		logger.Error(err)
 
 		return err
 	}
@@ -59,7 +66,7 @@ func consumeArticleExist() error {
 		nil,                     // arguments
 	)
 	if err != nil {
-		glog.Error(err)
+		logger.Error(err)
 
 		return err
 	}
@@ -71,7 +78,7 @@ func consumeArticleExist() error {
 		false,
 		nil)
 	if err != nil {
-		glog.Error(err)
+		logger.Error(err)
 
 		return err
 	}
@@ -86,35 +93,46 @@ func consumeArticleExist() error {
 		nil,        // args
 	)
 	if err != nil {
-		glog.Error(err)
+		logger.Error(err)
 
 		return err
 	}
 
-	glog.Info("RabbitMQ consumeOrdersChannel conectado")
+	logger.Info("RabbitMQ consumeOrdersChannel conectado")
 
 	go func() {
 		for d := range mgs {
 			body := d.Body
-			glog.Info("Incomming article_exist :", string(body))
+			logger.Info("Incomming article_exist :", string(body))
 
-			newMessage := &service.ConsumeArticleExist{}
+			newMessage := &rschema.ConsumeArticleExist{}
 			err = json.Unmarshal(body, newMessage)
 			if err == nil {
-				service.ProcessArticleData(newMessage)
+				l := logger.WithField("CorrelationId", getConsumeArticleExistCorrelationId(newMessage))
+				service.ProcessArticleData(newMessage, l)
 
 				if err := d.Ack(false); err != nil {
-					glog.Info("Failed ACK article_exist :", string(body), err)
+					l.Info("Failed ACK article_exist :", string(body), err)
 				} else {
-					glog.Info("Consumed article_exist :", string(body))
+					l.Info("Consumed article_exist :", string(body))
 				}
 			} else {
-				glog.Error(err)
+				logger.Error(err)
 			}
 		}
 	}()
 
-	glog.Info("Closed connection: ", <-conn.NotifyClose(make(chan *amqp.Error)))
+	logger.Info("Closed connection: ", <-conn.NotifyClose(make(chan *amqp.Error)))
 
 	return nil
+}
+
+func getConsumeArticleExistCorrelationId(c *rschema.ConsumeArticleExist) string {
+	value := c.CorrelationId
+
+	if len(value) == 0 {
+		value = uuid.NewV4().String()
+	}
+
+	return value
 }

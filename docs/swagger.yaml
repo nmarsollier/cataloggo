@@ -44,11 +44,11 @@ definitions:
     type: object
   consume.logoutMessage:
     properties:
+      correlation_id:
+        example: "123123"
+        type: string
       message:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg
-        type: string
-      type:
-        example: logout
         type: string
     type: object
   engine.ErrorData:
@@ -70,7 +70,7 @@ definitions:
       path:
         type: string
     type: object
-  service.ArticleExistMessage:
+  rschema.ArticleExistMessage:
     properties:
       articleId:
         example: ArticleId
@@ -85,18 +85,21 @@ definitions:
       valid:
         type: boolean
     type: object
-  service.ConsumeArticleExist:
+  rschema.ConsumeArticleExist:
     properties:
+      correlation_id:
+        example: "123123"
+        type: string
       exchange:
         example: Remote Exchange to Reply
         type: string
       message:
-        $ref: '#/definitions/service.ConsumeArticleExistMessage'
+        $ref: '#/definitions/rschema.ConsumeArticleExistMessage'
       routing_key:
         example: Remote RoutingKey to Reply
         type: string
     type: object
-  service.ConsumeArticleExistMessage:
+  rschema.ConsumeArticleExistMessage:
     properties:
       articleId:
         example: ArticleId
@@ -104,6 +107,14 @@ definitions:
       referenceId:
         example: Remote Reference Object Id
         type: string
+    type: object
+  rschema.SendArticleExist:
+    properties:
+      correlation_id:
+        example: "123123"
+        type: string
+      message:
+        $ref: '#/definitions/rschema.ArticleExistMessage'
     type: object
   service.ConsumeOrderPlacedArticle:
     properties:
@@ -122,11 +133,6 @@ definitions:
         type: string
       orderId:
         type: string
-    type: object
-  service.SendArticleExist:
-    properties:
-      message:
-        $ref: '#/definitions/service.ArticleExistMessage'
     type: object
 host: localhost:3002
 info:
@@ -148,7 +154,7 @@ paths:
         name: article_exist
         required: true
         schema:
-          $ref: '#/definitions/service.ConsumeArticleExist'
+          $ref: '#/definitions/rschema.ConsumeArticleExist'
       produces:
       - application/json
       responses: {}
@@ -165,7 +171,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/service.SendArticleExist'
+          $ref: '#/definitions/rschema.SendArticleExist'
       produces:
       - application/json
       responses: {}

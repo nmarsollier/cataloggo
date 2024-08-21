@@ -32,7 +32,8 @@ func init() {
 func getArticle(c *gin.Context) {
 	articleId := c.Param("articleId")
 
-	result, err := article.FindById(articleId)
+	ctx := engine.GinCtx(c)
+	result, err := article.FindById(articleId, ctx...)
 	if err != nil {
 		engine.AbortWithError(c, err)
 		return

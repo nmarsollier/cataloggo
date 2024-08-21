@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/golang/glog"
+	"github.com/nmarsollier/cataloggo/log"
+	"github.com/nmarsollier/cataloggo/rabbit/rschema"
 	"github.com/nmarsollier/cataloggo/tools/env"
 	"github.com/streadway/amqp"
 )
@@ -12,20 +13,20 @@ import (
 // ErrChannelNotInitialized Rabbit channel could not be initialized
 var ErrChannelNotInitialized = errors.New("channel not initialized")
 
-func getChannel() (*amqp.Channel, error) {
+func getChannel(ctx ...interface{}) (*amqp.Channel, error) {
 	conn, err := amqp.Dial(env.Get().RabbitURL)
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 		return nil, err
 	}
 
 	ch, err := conn.Channel()
 	if err != nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 		return nil, err
 	}
 	if ch == nil {
-		glog.Error(err)
+		log.Get(ctx...).Error(err)
 		return nil, ErrChannelNotInitialized
 	}
 	return ch, nil
@@ -38,14 +39,24 @@ func getChannel() (*amqp.Channel, error) {
 //	@Tags			Rabbit
 //	@Accept			json
 //	@Produce		json
-//	@Param			body	body	service.SendArticleExist	true	"Estructura general del mensage"
+//	@Param			body	body	rschema.SendArticleExist	true	"Estructura general del mensage"
 //	@Router			/rabbit/article_exist [put]
-func EmitDirect(exchange string, queue string, data interface{}) error {
+func EmitArticleExist(exchange string, routingKey string, message *rschema.ArticleExistMessage, ctx ...interface{}) error {
 
-	chn, err := getChannel()
+	logger := log.Get(ctx...).
+		WithField("Controller", "Rabbit").
+		WithField("Method", "Emit").
+		WithField("Queue", "article_exist")
+	corrId, _ := logger.Data["CorrelationId"].(string)
+	data := &rschema.SendArticleExist{
+		Message:       *message,
+		CorrelationId: corrId,
+	}
+
+	chn, err := getChannel(ctx...)
 	if err != nil {
 		chn = nil
-		glog.Error(err)
+		logger.Error(err)
 		return err
 	}
 
@@ -60,31 +71,31 @@ func EmitDirect(exchange string, queue string, data interface{}) error {
 	)
 	if err != nil {
 		chn = nil
-		glog.Error(err)
+		logger.Error(err)
 		return err
 	}
 
 	body, err := json.Marshal(data)
 	if err != nil {
-		glog.Error(err)
+		logger.Error(err)
 		return err
 	}
 
 	err = chn.Publish(
-		exchange, // exchange
-		queue,    // routing key
-		false,    // mandatory
-		false,    // immediate
+		exchange,   // exchange
+		routingKey, // routing key
+		false,      // mandatory
+		false,      // immediate
 		amqp.Publishing{
 			Body: []byte(body),
 		})
 	if err != nil {
 		chn = nil
-		glog.Error(err)
+		logger.Error(err)
 		return err
 	}
 
-	glog.Info("Emit article_exist : ", string(body))
+	logger.Info("Emit article_exist : ", string(body))
 
 	return nil
 }

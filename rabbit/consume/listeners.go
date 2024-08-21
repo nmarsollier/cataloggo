@@ -3,17 +3,21 @@ package consume
 import (
 	"time"
 
-	"github.com/golang/glog"
+	"github.com/nmarsollier/cataloggo/log"
 )
 
 func Init() {
+	logger := log.Get().
+		WithField("Controller", "Rabbit").
+		WithField("Method", "Consume")
+
 	go func() {
 		for {
 			err := consumeArticleExist()
 			if err != nil {
-				glog.Error(err)
+				logger.Error(err)
 			}
-			glog.Info("RabbitMQ consumeOrders conectando en 5 segundos.")
+			logger.Info("RabbitMQ consumeOrders conectando en 5 segundos.")
 			time.Sleep(5 * time.Second)
 		}
 	}()
@@ -21,9 +25,9 @@ func Init() {
 		for {
 			err := consumeOrderPlaced()
 			if err != nil {
-				glog.Error(err)
+				logger.Error(err)
 			}
-			glog.Info("RabbitMQ consumeOrderPlaced conectando en 5 segundos.")
+			logger.Info("RabbitMQ consumeOrderPlaced conectando en 5 segundos.")
 			time.Sleep(5 * time.Second)
 		}
 	}()
@@ -31,9 +35,9 @@ func Init() {
 		for {
 			err := consumeLogout()
 			if err != nil {
-				glog.Error(err)
+				logger.Error(err)
 			}
-			glog.Info("RabbitMQ listenLogout conectando en 5 segundos.")
+			logger.Info("RabbitMQ listenLogout conectando en 5 segundos.")
 			time.Sleep(5 * time.Second)
 		}
 	}()

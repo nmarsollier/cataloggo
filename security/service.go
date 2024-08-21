@@ -3,7 +3,7 @@ package security
 import (
 	"time"
 
-	"github.com/golang/glog"
+	"github.com/nmarsollier/cataloggo/log"
 	"github.com/nmarsollier/cataloggo/tools/errs"
 	gocache "github.com/patrickmn/go-cache"
 )
@@ -19,7 +19,7 @@ type User struct {
 }
 
 // Validate valida si el token es valido
-func Validate(token string) (*User, error) {
+func Validate(token string, ctx ...interface{}) (*User, error) {
 	// Si esta en cache, retornamos el cache
 	if found, ok := cache.Get(token); ok {
 		if user, ok := found.(*User); ok {
@@ -27,9 +27,8 @@ func Validate(token string) (*User, error) {
 		}
 	}
 
-	user, err := getRemoteToken(token)
+	user, err := getRemoteToken(token, ctx...)
 	if err != nil {
-		glog.Error(err)
 		return nil, errs.Unauthorized
 	}
 
@@ -40,9 +39,9 @@ func Validate(token string) (*User, error) {
 }
 
 // Invalidate invalida un token del cache
-func Invalidate(token string) {
+func Invalidate(token string, ctx ...interface{}) {
 	if len(token) <= 7 {
-		glog.Info("Token no valido: ", token)
+		log.Get(ctx...).Info("Token no valido: ", token)
 		return
 	}
 
