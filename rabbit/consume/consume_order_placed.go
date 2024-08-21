@@ -21,9 +21,10 @@ import (
 // Consume Order Placed
 func consumeOrderPlaced() error {
 	logger := log.Get().
-		WithField("Controller", "Rabbit").
-		WithField("Queue", "order_placed").
-		WithField("Method", "Consume")
+		WithField(log.LOG_FIELD_CONTOROLLER, "Rabbit").
+		WithField(log.LOG_FIELD_RABBIT_EXCHANGE, "order_placed").
+		WithField(log.LOG_FIELD_RABBIT_QUEUE, "catalog_order_placed").
+		WithField(log.LOG_FIELD_RABBIT_ACTION, "Consume")
 
 	conn, err := amqp.Dial(env.Get().RabbitURL)
 	if err != nil {
@@ -100,7 +101,7 @@ func consumeOrderPlaced() error {
 			articleMessage := &service.ConsumeOrderPlaced{}
 			err = json.Unmarshal(body, articleMessage)
 			if err == nil {
-				l := logger.WithField("CorrelationId", getConsumeOrderPlacedCorrelationId(articleMessage))
+				l := logger.WithField(log.LOG_FIELD_CORRELATION_ID, getConsumeOrderPlacedCorrelationId(articleMessage))
 
 				service.ProcessOrderPlaced(articleMessage, l)
 

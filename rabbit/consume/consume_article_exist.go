@@ -22,9 +22,10 @@ import (
 // Validar Artículos
 func consumeArticleExist() error {
 	logger := log.Get().
-		WithField("Controller", "Rabbit").
-		WithField("Queue", "article_exist").
-		WithField("Method", "Consume")
+		WithField(log.LOG_FIELD_CONTOROLLER, "Rabbit").
+		WithField(log.LOG_FIELD_RABBIT_EXCHANGE, "article_exist").
+		WithField(log.LOG_FIELD_RABBIT_QUEUE, "catalog_article_exist").
+		WithField(log.LOG_FIELD_RABBIT_ACTION, "Consume")
 
 	conn, err := amqp.Dial(env.Get().RabbitURL)
 	if err != nil {
@@ -108,7 +109,7 @@ func consumeArticleExist() error {
 			newMessage := &rschema.ConsumeArticleExist{}
 			err = json.Unmarshal(body, newMessage)
 			if err == nil {
-				l := logger.WithField("CorrelationId", getConsumeArticleExistCorrelationId(newMessage))
+				l := logger.WithField(log.LOG_FIELD_CORRELATION_ID, getConsumeArticleExistCorrelationId(newMessage))
 				service.ProcessArticleData(newMessage, l)
 
 				if err := d.Ack(false); err != nil {

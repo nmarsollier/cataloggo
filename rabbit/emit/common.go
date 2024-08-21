@@ -44,10 +44,10 @@ func getChannel(ctx ...interface{}) (*amqp.Channel, error) {
 func EmitArticleExist(exchange string, routingKey string, message *rschema.ArticleExistMessage, ctx ...interface{}) error {
 
 	logger := log.Get(ctx...).
-		WithField("Controller", "Rabbit").
-		WithField("Method", "Emit").
-		WithField("Queue", "article_exist")
-	corrId, _ := logger.Data["CorrelationId"].(string)
+		WithField(log.LOG_FIELD_CONTOROLLER, "Rabbit").
+		WithField(log.LOG_FIELD_RABBIT_ACTION, "Emit").
+		WithField(log.LOG_FIELD_RABBIT_EXCHANGE, "article_exist")
+	corrId, _ := logger.Data[log.LOG_FIELD_CORRELATION_ID].(string)
 	data := &rschema.SendArticleExist{
 		Message:       *message,
 		CorrelationId: corrId,
@@ -95,7 +95,7 @@ func EmitArticleExist(exchange string, routingKey string, message *rschema.Artic
 		return err
 	}
 
-	logger.Info("Emit article_exist : ", string(body))
+	logger.Info(string(body))
 
 	return nil
 }
