@@ -103,12 +103,12 @@ func consumeLogout() error {
 	go func() {
 		for d := range mgs {
 			body := d.Body
-			logger.Info("Incomming :", string(body))
 
 			newMessage := &logoutMessage{}
 			err = json.Unmarshal(body, newMessage)
 			if err == nil {
 				l := logger.WithField(log.LOG_FIELD_CORRELATION_ID, getCorrelationId(newMessage))
+				l.Info("Incoming :", string(body))
 
 				security.Invalidate(newMessage.Message, l)
 				l.Info("Consumed :", string(body))

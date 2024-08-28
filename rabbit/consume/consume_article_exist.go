@@ -104,12 +104,12 @@ func consumeArticleExist() error {
 	go func() {
 		for d := range mgs {
 			body := d.Body
-			logger.Info("Incomming article_exist :", string(body))
 
 			newMessage := &rschema.ConsumeArticleExist{}
 			err = json.Unmarshal(body, newMessage)
 			if err == nil {
 				l := logger.WithField(log.LOG_FIELD_CORRELATION_ID, getConsumeArticleExistCorrelationId(newMessage))
+				l.Info("Incoming article_exist :", string(body))
 				service.ProcessArticleData(newMessage, l)
 
 				if err := d.Ack(false); err != nil {

@@ -96,12 +96,12 @@ func consumeOrderPlaced() error {
 	go func() {
 		for d := range mgs {
 			body := d.Body
-			logger.Info("Incomming order_placed :", string(body))
 
 			articleMessage := &service.ConsumeOrderPlaced{}
 			err = json.Unmarshal(body, articleMessage)
 			if err == nil {
 				l := logger.WithField(log.LOG_FIELD_CORRELATION_ID, getConsumeOrderPlacedCorrelationId(articleMessage))
+				l.Info("Incoming order_placed :", string(body))
 
 				service.ProcessOrderPlaced(articleMessage, l)
 
