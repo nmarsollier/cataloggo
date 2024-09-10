@@ -3,7 +3,7 @@ package errs
 import (
 	"encoding/json"
 
-	"github.com/nmarsollier/cataloggo/log"
+	"github.com/nmarsollier/cataloggo/tools/log"
 )
 
 // Validation es una interfaz para definir errores custom

@@ -3,9 +3,9 @@ package article
 import (
 	"context"
 
-	"github.com/nmarsollier/cataloggo/log"
 	"github.com/nmarsollier/cataloggo/tools/db"
 	"github.com/nmarsollier/cataloggo/tools/errs"
+	"github.com/nmarsollier/cataloggo/tools/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -108,7 +108,7 @@ func findById(articleId string, ctx ...interface{}) (*Article, error) {
 }
 
 func insert(article *Article, ctx ...interface{}) (*Article, error) {
-	if err := article.ValidateSchema(); err != nil {
+	if err := article.validateSchema(); err != nil {
 		log.Get(ctx...).Error(err)
 
 		return nil, err

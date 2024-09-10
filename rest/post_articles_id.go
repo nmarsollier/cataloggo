@@ -30,7 +30,7 @@ func init() {
 }
 
 func updateArticle(c *gin.Context) {
-	body := article.NewArticleData{}
+	body := article.UpdateArticleData{}
 	if err := c.ShouldBindJSON(&body); err != nil {
 		engine.AbortWithError(c, err)
 		return

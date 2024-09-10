@@ -26,7 +26,7 @@ type Description struct {
 	Image       string `bson:"image"  json:"image" validate:"max=100"`
 }
 
-// ValidateSchema valida la estructura para ser insertada en la db
-func (e *Article) ValidateSchema() error {
+// validateSchema valida la estructura para ser insertada en la db
+func (e *Article) validateSchema() error {
 	return validator.New().Struct(e)
 }

@@ -3,12 +3,16 @@ package security
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/nmarsollier/cataloggo/log"
 	"github.com/nmarsollier/cataloggo/tools/env"
 	"github.com/nmarsollier/cataloggo/tools/errs"
+	"github.com/nmarsollier/cataloggo/tools/log"
+	gocache "github.com/patrickmn/go-cache"
 )
+
+var cache = gocache.New(60*time.Minute, 10*time.Minute)
 
 func getRemoteToken(token string, ctx ...interface{}) (*User, error) {
 	// Buscamos el usuario remoto

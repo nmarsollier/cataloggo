@@ -3,7 +3,7 @@ package consume
 import (
 	"time"
 
-	"github.com/nmarsollier/cataloggo/log"
+	"github.com/nmarsollier/cataloggo/tools/log"
 )
 
 func Init() {

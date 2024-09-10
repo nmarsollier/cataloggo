@@ -3,10 +3,10 @@ package consume
 import (
 	"encoding/json"
 
-	"github.com/nmarsollier/cataloggo/log"
 	"github.com/nmarsollier/cataloggo/rabbit/rschema"
-	"github.com/nmarsollier/cataloggo/service"
+	"github.com/nmarsollier/cataloggo/services"
 	"github.com/nmarsollier/cataloggo/tools/env"
+	"github.com/nmarsollier/cataloggo/tools/log"
 	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
 )
@@ -110,7 +110,7 @@ func consumeArticleExist() error {
 			if err == nil {
 				l := logger.WithField(log.LOG_FIELD_CORRELATION_ID, getConsumeArticleExistCorrelationId(newMessage))
 				l.Info("Incoming article_exist :", string(body))
-				service.ProcessArticleData(newMessage, l)
+				services.ProcessArticleData(newMessage, l)
 
 				if err := d.Ack(false); err != nil {
 					l.Info("Failed ACK article_exist :", string(body), err)

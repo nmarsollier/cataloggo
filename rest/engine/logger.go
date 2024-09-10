@@ -2,7 +2,7 @@ package engine
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/nmarsollier/cataloggo/log"
+	"github.com/nmarsollier/cataloggo/tools/log"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 )

@@ -3,9 +3,9 @@ package consume
 import (
 	"encoding/json"
 
-	"github.com/nmarsollier/cataloggo/log"
-	"github.com/nmarsollier/cataloggo/service"
+	"github.com/nmarsollier/cataloggo/services"
 	"github.com/nmarsollier/cataloggo/tools/env"
+	"github.com/nmarsollier/cataloggo/tools/log"
 	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
 )
@@ -97,13 +97,13 @@ func consumeOrderPlaced() error {
 		for d := range mgs {
 			body := d.Body
 
-			articleMessage := &service.ConsumeOrderPlaced{}
+			articleMessage := &services.ConsumeOrderPlaced{}
 			err = json.Unmarshal(body, articleMessage)
 			if err == nil {
 				l := logger.WithField(log.LOG_FIELD_CORRELATION_ID, getConsumeOrderPlacedCorrelationId(articleMessage))
 				l.Info("Incoming order_placed :", string(body))
 
-				service.ProcessOrderPlaced(articleMessage, l)
+				services.ProcessOrderPlaced(articleMessage, l)
 
 				if err := d.Ack(false); err != nil {
 					l.Info("Failed ACK order_placed :", string(body), err)
@@ -121,7 +121,7 @@ func consumeOrderPlaced() error {
 	return nil
 }
 
-func getConsumeOrderPlacedCorrelationId(c *service.ConsumeOrderPlaced) string {
+func getConsumeOrderPlacedCorrelationId(c *services.ConsumeOrderPlaced) string {
 	value := c.CorrelationId
 
 	if len(value) == 0 {

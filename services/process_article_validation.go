@@ -1,4 +1,4 @@
-package service
+package services
 
 import (
 	"github.com/nmarsollier/cataloggo/article"
