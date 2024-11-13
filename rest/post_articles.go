@@ -11,7 +11,7 @@ import (
 //	@Tags			Catalogo
 //	@Accept			json
 //	@Produce		json
-//	@Param			Authorization	header		string					true	"bearer {token}"
+//	@Param			Authorization	header		string					true	"Bearer {token}"
 //	@Param			body			body		article.NewArticleData	true	"Informacion del articulo"
 //	@Success		200				{object}	article.ArticleData		"Articulo"
 //	@Failure		400				{object}	errs.ValidationErr		"Bad Request"
