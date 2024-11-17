@@ -17,7 +17,7 @@ El servidor GraphQL puede navegar en [localhost:4002](http://localhost:4002/)
 
 - **article:** Logica de negocio del agregado article
 - **security:** Validaciones de usuario contra el MS de Auth
-- **services:** Domain services.
+- **services:** Servicios de dominio para el negocio.
 - **graph:** Servidor y Controllers GraphQL federation server
 - **rabbit:** Servidor y Controllers RabbitMQ
 - **rest:** Servidor y Controllers Rest
