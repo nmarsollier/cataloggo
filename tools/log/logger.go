@@ -69,8 +69,8 @@ func new() *logrus.Entry {
 	return result
 }
 
-func Get(ctx ...interface{}) *logrus.Entry {
-	for _, o := range ctx {
+func Get(deps ...interface{}) *logrus.Entry {
+	for _, o := range deps {
 		if tc, ok := o.(*logrus.Entry); ok {
 			return tc
 		}
