@@ -9,10 +9,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func newLogger(ctx context.Context, env ...interface{}) *logrus.Entry {
+func newLogger(ctx context.Context, deps ...interface{}) *logrus.Entry {
 	operationContext := graphql.GetOperationContext(ctx)
 
-	return log.Get(env...).
+	return log.Get(deps...).
 		WithField(log.LOG_FIELD_CORRELATION_ID, getCorrelationId(ctx)).
 		WithField(log.LOG_FIELD_CONTROLLER, "Rest").
 		WithField(log.LOG_FIELD_HTTP_METHOD, operationContext.OperationName).

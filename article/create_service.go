@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func CreateArticle(articleData *UpdateArticleData, ctx ...interface{}) (*ArticleData, error) {
+func CreateArticle(articleData *UpdateArticleData, deps ...interface{}) (*ArticleData, error) {
 	article, err := insert(&Article{
 		ID: primitive.NewObjectID(),
 		Description: Description{
@@ -19,7 +19,7 @@ func CreateArticle(articleData *UpdateArticleData, ctx ...interface{}) (*Article
 		Enabled: true,
 		Created: time.Now(),
 		Updated: time.Now(),
-	}, ctx...)
+	}, deps...)
 
 	if err != nil {
 		return nil, err

@@ -6,14 +6,14 @@ import (
 	"github.com/nmarsollier/cataloggo/rabbit/rschema"
 )
 
-func ProcessArticleData(data *rschema.ConsumeArticleExist, ctx ...interface{}) {
-	article, err := article.FindById(data.Message.ArticleId, ctx...)
+func ProcessArticleData(data *rschema.ConsumeArticleExist, deps ...interface{}) {
+	article, err := article.FindById(data.Message.ArticleId, deps...)
 	if err != nil {
 		emit.EmitArticleExist(data.Exchange, data.RoutingKey, &rschema.ArticleExistMessage{
 			ArticleId:   data.Message.ArticleId,
 			ReferenceId: data.Message.ReferenceId,
 			Valid:       false,
-		}, ctx...)
+		}, deps...)
 		return
 	}
 
@@ -23,5 +23,5 @@ func ProcessArticleData(data *rschema.ConsumeArticleExist, ctx ...interface{}) {
 		Stock:       article.Stock,
 		Price:       article.Price,
 		Valid:       article.Enabled,
-	}, ctx...)
+	}, deps...)
 }

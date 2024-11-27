@@ -1,7 +1,7 @@
 package article
 
-func FindByCriteria(criteria string, ctx ...interface{}) ([]*ArticleData, error) {
-	articles, err := findByCriteria(criteria, ctx...)
+func FindByCriteria(criteria string, deps ...interface{}) ([]*ArticleData, error) {
+	articles, err := findByCriteria(criteria, deps...)
 	if err != nil {
 		return nil, err
 	}

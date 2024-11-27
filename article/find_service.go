@@ -1,8 +1,8 @@
 package article
 
-func FindById(id string, ctx ...interface{}) (*ArticleData, error) {
+func FindById(id string, deps ...interface{}) (*ArticleData, error) {
 
-	article, err := findById(id, ctx...)
+	article, err := findById(id, deps...)
 	if err != nil {
 		return nil, err
 	}

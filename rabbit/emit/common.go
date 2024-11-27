@@ -13,20 +13,20 @@ import (
 // ErrChannelNotInitialized Rabbit channel could not be initialized
 var ErrChannelNotInitialized = errors.New("channel not initialized")
 
-func getChannel(ctx ...interface{}) (*amqp.Channel, error) {
+func getChannel(deps ...interface{}) (*amqp.Channel, error) {
 	conn, err := amqp.Dial(env.Get().RabbitURL)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 		return nil, err
 	}
 
 	ch, err := conn.Channel()
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 		return nil, err
 	}
 	if ch == nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 		return nil, ErrChannelNotInitialized
 	}
 	return ch, nil
@@ -41,9 +41,9 @@ func getChannel(ctx ...interface{}) (*amqp.Channel, error) {
 //	@Produce		json
 //	@Param			body	body	rschema.SendArticleExist	true	"Estructura general del mensage"
 //	@Router			/rabbit/article_exist [put]
-func EmitArticleExist(exchange string, routingKey string, message *rschema.ArticleExistMessage, ctx ...interface{}) error {
+func EmitArticleExist(exchange string, routingKey string, message *rschema.ArticleExistMessage, deps ...interface{}) error {
 
-	logger := log.Get(ctx...).
+	logger := log.Get(deps...).
 		WithField(log.LOG_FIELD_CONTROLLER, "Rabbit").
 		WithField(log.LOG_FIELD_RABBIT_ACTION, "Emit").
 		WithField(log.LOG_FIELD_RABBIT_EXCHANGE, "article_exist")
@@ -53,7 +53,7 @@ func EmitArticleExist(exchange string, routingKey string, message *rschema.Artic
 		CorrelationId: corrId,
 	}
 
-	chn, err := getChannel(ctx...)
+	chn, err := getChannel(deps...)
 	if err != nil {
 		chn = nil
 		logger.Error(err)

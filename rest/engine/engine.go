@@ -41,10 +41,10 @@ func Router() *gin.Engine {
 
 // Obtiene el contexto a serivcios externos
 // En prod este contexto esta vacio.
-func GinCtx(c *gin.Context) []interface{} {
-	var ctx []interface{}
+func GinDeps(c *gin.Context) []interface{} {
+	var deps []interface{}
 
-	ctx = append(ctx, ginLogger(c))
+	deps = append(deps, ginLogger(c))
 
-	return ctx
+	return deps
 }

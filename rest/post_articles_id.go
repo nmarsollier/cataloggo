@@ -37,8 +37,8 @@ func updateArticle(c *gin.Context) {
 	}
 	articleId := c.Param("articleId")
 
-	ctx := engine.GinCtx(c)
-	err := article.UpdateArticle(articleId, &body, ctx...)
+	deps := engine.GinDeps(c)
+	err := article.UpdateArticle(articleId, &body, deps...)
 	if err != nil {
 		engine.AbortWithError(c, err)
 		return

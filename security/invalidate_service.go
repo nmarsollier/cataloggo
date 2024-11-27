@@ -5,9 +5,9 @@ import (
 )
 
 // Invalidate invalida un token del cache
-func Invalidate(token string, ctx ...interface{}) {
+func Invalidate(token string, deps ...interface{}) {
 	if len(token) <= 7 {
-		log.Get(ctx...).Info("Token no valido: ", token)
+		log.Get(deps...).Info("Token no valido: ", token)
 		return
 	}
 

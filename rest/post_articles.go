@@ -36,8 +36,8 @@ func saveArticle(c *gin.Context) {
 		return
 	}
 
-	ctx := engine.GinCtx(c)
-	article, err := article.CreateArticle(&body, ctx...)
+	deps := engine.GinDeps(c)
+	article, err := article.CreateArticle(&body, deps...)
 	if err != nil {
 		engine.AbortWithError(c, err)
 		return

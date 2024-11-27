@@ -16,14 +16,14 @@ var ErrID = errs.NewValidation().Add("id", "Invalid")
 // Define mongo Collection
 var collection *mongo.Collection
 
-func dbCollection(ctx ...interface{}) (*mongo.Collection, error) {
+func dbCollection(deps ...interface{}) (*mongo.Collection, error) {
 	if collection != nil {
 		return collection, nil
 	}
 
-	database, err := db.Get(ctx...)
+	database, err := db.Get(deps...)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return nil, err
 	}
@@ -34,10 +34,10 @@ func dbCollection(ctx ...interface{}) (*mongo.Collection, error) {
 	return collection, nil
 }
 
-func findByCriteria(criteria string, ctx ...interface{}) ([]*Article, error) {
-	var collection, err = dbCollection(ctx...)
+func findByCriteria(criteria string, deps ...interface{}) ([]*Article, error) {
+	var collection, err = dbCollection(deps...)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func findByCriteria(criteria string, ctx ...interface{}) ([]*Article, error) {
 
 	cur, err := collection.Find(context.Background(), filter)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func findByCriteria(criteria string, ctx ...interface{}) ([]*Article, error) {
 	for cur.Next(context.Background()) {
 		article := &Article{}
 		if err := cur.Decode(article); err != nil {
-			log.Get(ctx...).Error(err)
+			log.Get(deps...).Error(err)
 
 			return nil, err
 		}
@@ -80,17 +80,17 @@ type DBCriteriaElement struct {
 	Options string `bson:"$options"`
 }
 
-func findById(articleId string, ctx ...interface{}) (*Article, error) {
-	var collection, err = dbCollection(ctx...)
+func findById(articleId string, deps ...interface{}) (*Article, error) {
+	var collection, err = dbCollection(deps...)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return nil, err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return nil, ErrID
 	}
@@ -99,7 +99,7 @@ func findById(articleId string, ctx ...interface{}) (*Article, error) {
 	filter := DbIdFilter{ID: _id}
 
 	if err = collection.FindOne(context.Background(), filter).Decode(article); err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return nil, err
 	}
@@ -107,22 +107,22 @@ func findById(articleId string, ctx ...interface{}) (*Article, error) {
 	return article, nil
 }
 
-func insert(article *Article, ctx ...interface{}) (*Article, error) {
+func insert(article *Article, deps ...interface{}) (*Article, error) {
 	if err := article.validateSchema(); err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return nil, err
 	}
 
-	var collection, err = dbCollection(ctx...)
+	var collection, err = dbCollection(deps...)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return nil, err
 	}
 
 	if _, err = collection.InsertOne(context.Background(), article); err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return nil, err
 	}
@@ -131,17 +131,17 @@ func insert(article *Article, ctx ...interface{}) (*Article, error) {
 }
 
 // disable Deshabilita el articulo para que no se pueda usar mas
-func Disable(articleId string, ctx ...interface{}) error {
-	var collection, err = dbCollection(ctx...)
+func Disable(articleId string, deps ...interface{}) error {
+	var collection, err = dbCollection(deps...)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return ErrID
 	}
@@ -167,17 +167,17 @@ type DbEnableBody struct {
 }
 
 // Actualiza la descripción de un articulo.
-func updateDescription(articleId string, description Description, ctx ...interface{}) error {
-	var collection, err = dbCollection(ctx...)
+func updateDescription(articleId string, description Description, deps ...interface{}) error {
+	var collection, err = dbCollection(deps...)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return ErrID
 	}
@@ -202,17 +202,17 @@ type DbUpdateDescriptionBody struct {
 }
 
 // Actualiza el precio de un articulo.
-func updatePrice(articleId string, price float32, ctx ...interface{}) error {
-	var collection, err = dbCollection(ctx...)
+func updatePrice(articleId string, price float32, deps ...interface{}) error {
+	var collection, err = dbCollection(deps...)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return ErrID
 	}
@@ -237,17 +237,17 @@ type DbUpdatePriceBody struct {
 }
 
 // Actualiza el stock de un articulo.
-func updateStock(articleId string, stock int, ctx ...interface{}) error {
-	var collection, err = dbCollection(ctx...)
+func updateStock(articleId string, stock int, deps ...interface{}) error {
+	var collection, err = dbCollection(deps...)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return err
 	}
 
 	_id, err := primitive.ObjectIDFromHex(articleId)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return ErrID
 	}
@@ -260,7 +260,7 @@ func updateStock(articleId string, stock int, ctx ...interface{}) error {
 		},
 	)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 	}
 
 	return err
@@ -270,10 +270,10 @@ type DbUpdateStockDocument struct {
 	Set DbUpdateStockBody `bson:"$set"`
 }
 
-func DecrementStock(articleId primitive.ObjectID, amount int, ctx ...interface{}) error {
-	var collection, err = dbCollection(ctx...)
+func DecrementStock(articleId primitive.ObjectID, amount int, deps ...interface{}) error {
+	var collection, err = dbCollection(deps...)
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 
 		return err
 	}
@@ -287,7 +287,7 @@ func DecrementStock(articleId primitive.ObjectID, amount int, ctx ...interface{}
 	)
 
 	if err != nil {
-		log.Get(ctx...).Error(err)
+		log.Get(deps...).Error(err)
 	}
 
 	return err

@@ -32,9 +32,9 @@ func init() {
 func getArticleSearch(c *gin.Context) {
 	criteria := c.Param("criteria")
 
-	ctx := engine.GinCtx(c)
+	deps := engine.GinDeps(c)
 
-	result, err := article.FindByCriteria(criteria, ctx...)
+	result, err := article.FindByCriteria(criteria, deps...)
 	if err != nil {
 		engine.AbortWithError(c, err)
 		return

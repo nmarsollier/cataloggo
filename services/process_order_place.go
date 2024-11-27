@@ -4,11 +4,11 @@ import (
 	"github.com/nmarsollier/cataloggo/article"
 )
 
-func ProcessOrderPlaced(data *ConsumeOrderPlaced, ctx ...interface{}) {
+func ProcessOrderPlaced(data *ConsumeOrderPlaced, deps ...interface{}) {
 	for _, a := range data.Message.Articles {
-		art, err := article.FindById(a.ArticleId, ctx...)
+		art, err := article.FindById(a.ArticleId, deps...)
 		if err == nil {
-			article.DecrementStock(art.ID, a.Quantity, ctx...)
+			article.DecrementStock(art.ID, a.Quantity, deps...)
 		}
 	}
 }
