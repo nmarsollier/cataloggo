@@ -61,7 +61,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateArticle func(childComplexity int, input UpdateArticle) int
+		CreateArticle func(childComplexity int, input CreateArticle) int
 		DeleteArticle func(childComplexity int, id string) int
 		UpdateArticle func(childComplexity int, input UpdateArticle) int
 	}
@@ -83,7 +83,7 @@ type EntityResolver interface {
 }
 type MutationResolver interface {
 	DeleteArticle(ctx context.Context, id string) (bool, error)
-	CreateArticle(ctx context.Context, input UpdateArticle) (bool, error)
+	CreateArticle(ctx context.Context, input CreateArticle) (bool, error)
 	UpdateArticle(ctx context.Context, input UpdateArticle) (bool, error)
 }
 type QueryResolver interface {
@@ -174,7 +174,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateArticle(childComplexity, args["input"].(UpdateArticle)), true
+		return e.complexity.Mutation.CreateArticle(childComplexity, args["input"].(CreateArticle)), true
 
 	case "Mutation.deleteArticle":
 		if e.complexity.Mutation.DeleteArticle == nil {
@@ -258,6 +258,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	opCtx := graphql.GetOperationContext(ctx)
 	ec := executionContext{opCtx, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputCreateArticle,
 		ec.unmarshalInputUpdateArticle,
 	)
 	first := true
@@ -374,6 +375,14 @@ input UpdateArticle {
   stock: Int!
 }
 
+input CreateArticle {
+  name: String!
+  description: String!
+  image: String!
+  price: Float!
+  stock: Int!
+}
+
 type Query {
   getArticle(id: String!): Article!
   searchArticles(criteria: String!): [Article]!
@@ -381,7 +390,7 @@ type Query {
 
 type Mutation {
   deleteArticle(id: String!): Boolean!
-  createArticle(input: UpdateArticle!): Boolean!
+  createArticle(input: CreateArticle!): Boolean!
   updateArticle(input: UpdateArticle!): Boolean!
 }
 `, BuiltIn: false},
@@ -455,13 +464,13 @@ func (ec *executionContext) field_Mutation_createArticle_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_createArticle_argsInput(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (UpdateArticle, error) {
+) (CreateArticle, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNUpdateArticle2githubᚗcomᚋnmarsollierᚋcataloggoᚋgraphᚋmodelᚐUpdateArticle(ctx, tmp)
+		return ec.unmarshalNCreateArticle2githubᚗcomᚋnmarsollierᚋcataloggoᚋgraphᚋmodelᚐCreateArticle(ctx, tmp)
 	}
 
-	var zeroVal UpdateArticle
+	var zeroVal CreateArticle
 	return zeroVal, nil
 }
 
@@ -1059,7 +1068,7 @@ func (ec *executionContext) _Mutation_createArticle(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateArticle(rctx, fc.Args["input"].(UpdateArticle))
+		return ec.resolvers.Mutation().CreateArticle(rctx, fc.Args["input"].(CreateArticle))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3339,6 +3348,61 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputCreateArticle(ctx context.Context, obj interface{}) (CreateArticle, error) {
+	var it CreateArticle
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"name", "description", "image", "price", "stock"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "name":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Name = data
+		case "description":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Description = data
+		case "image":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("image"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Image = data
+		case "price":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("price"))
+			data, err := ec.unmarshalNFloat2float64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Price = data
+		case "stock":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("stock"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Stock = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateArticle(ctx context.Context, obj interface{}) (UpdateArticle, error) {
 	var it UpdateArticle
 	asMap := map[string]interface{}{}
@@ -4181,6 +4245,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNCreateArticle2githubᚗcomᚋnmarsollierᚋcataloggoᚋgraphᚋmodelᚐCreateArticle(ctx context.Context, v interface{}) (CreateArticle, error) {
+	res, err := ec.unmarshalInputCreateArticle(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {

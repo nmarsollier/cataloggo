@@ -17,7 +17,7 @@ func (r *mutationResolver) DeleteArticle(ctx context.Context, id string) (bool, 
 }
 
 // CreateArticle is the resolver for the createArticle field.
-func (r *mutationResolver) CreateArticle(ctx context.Context, input model.UpdateArticle) (bool, error) {
+func (r *mutationResolver) CreateArticle(ctx context.Context, input model.CreateArticle) (bool, error) {
 	return resolvers.CreateArticle(ctx, input)
 }
 

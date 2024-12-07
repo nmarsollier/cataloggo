@@ -16,6 +16,14 @@ input UpdateArticle {
   stock: Int!
 }
 
+input CreateArticle {
+  name: String!
+  description: String!
+  image: String!
+  price: Float!
+  stock: Int!
+}
+
 type Query {
   getArticle(id: String!): Article!
   searchArticles(criteria: String!): [Article]!
@@ -23,6 +31,6 @@ type Query {
 
 type Mutation {
   deleteArticle(id: String!): Boolean!
-  createArticle(input: UpdateArticle!): Boolean!
+  createArticle(input: CreateArticle!): Boolean!
   updateArticle(input: UpdateArticle!): Boolean!
 }

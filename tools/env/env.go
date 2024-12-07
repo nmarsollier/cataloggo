@@ -10,9 +10,11 @@ type Configuration struct {
 	Port              int    `json:"port"`
 	GqlPort           int    `json:"gqlPort"`
 	RabbitURL         string `json:"rabbitUrl"`
-	MongoURL          string `json:"mongoUrl"`
 	SecurityServerURL string `json:"securityServerUrl"`
 	FluentUrl         string `json:"fluentUrl"`
+	AwsAccessKeyId    string `json:"AwsAccessKeyId"`
+	AwsSecret         string `json:"AwsSecret"`
+	AwsRegion         string `json:"AwsRegion"`
 }
 
 var config *Configuration
@@ -22,9 +24,11 @@ func new() *Configuration {
 		Port:              3002,
 		GqlPort:           4002,
 		RabbitURL:         "amqp://localhost",
-		MongoURL:          "mongodb://localhost:27017",
 		SecurityServerURL: "http://localhost:3000",
 		FluentUrl:         "localhost:24224",
+		AwsAccessKeyId:    "placeholder_value",
+		AwsSecret:         "placeholder_value",
+		AwsRegion:         "placeholder_value",
 	}
 }
 
@@ -45,10 +49,17 @@ func load() *Configuration {
 		result.RabbitURL = value
 	}
 
-	if value := os.Getenv("MONGO_URL"); len(value) > 0 {
-		result.MongoURL = value
+	if value := os.Getenv("AWS_ACCESS_KEY_ID"); len(value) > 0 {
+		result.AwsAccessKeyId = value
 	}
 
+	if value := os.Getenv("AWS_SECRET_ACCESS_KEY"); len(value) > 0 {
+		result.AwsSecret = value
+	}
+
+	if value := os.Getenv("AWS_REGION"); len(value) > 0 {
+		result.AwsRegion = value
+	}
 	if value := os.Getenv("PORT"); len(value) > 0 {
 		if intVal, err := strconv.Atoi(value); err == nil {
 			result.Port = intVal

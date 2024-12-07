@@ -3,12 +3,12 @@ package article
 import (
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	uuid "github.com/satori/go.uuid"
 )
 
 func CreateArticle(articleData *UpdateArticleData, deps ...interface{}) (*ArticleData, error) {
-	article, err := insert(&Article{
-		ID: primitive.NewObjectID(),
+	article := &Article{
+		ID: uuid.NewV4().String(),
 		Description: Description{
 			Name:        articleData.Name,
 			Description: articleData.Description,
@@ -19,10 +19,13 @@ func CreateArticle(articleData *UpdateArticleData, deps ...interface{}) (*Articl
 		Enabled: true,
 		Created: time.Now(),
 		Updated: time.Now(),
-	}, deps...)
+	}
+
+	err := insert(article, deps...)
 
 	if err != nil {
 		return nil, err
 	}
+
 	return toArticleData(article), nil
 }

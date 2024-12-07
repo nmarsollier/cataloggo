@@ -7,7 +7,7 @@ import (
 
 func mapArticleDataToModel(article *article.ArticleData) *model.Article {
 	return &model.Article{
-		ID:          article.ID.Hex(),
+		ID:          article.ID,
 		Name:        article.Name,
 		Description: article.Description,
 		Image:       article.Image,

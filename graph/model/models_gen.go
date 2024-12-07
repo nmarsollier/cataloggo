@@ -13,6 +13,14 @@ type Article struct {
 
 func (Article) IsEntity() {}
 
+type CreateArticle struct {
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Image       string  `json:"image"`
+	Price       float64 `json:"price"`
+	Stock       int     `json:"stock"`
+}
+
 type Mutation struct {
 }
 

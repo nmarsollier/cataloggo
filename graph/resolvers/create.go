@@ -8,7 +8,7 @@ import (
 	"github.com/nmarsollier/cataloggo/graph/tools"
 )
 
-func CreateArticle(ctx context.Context, input model.UpdateArticle) (bool, error) {
+func CreateArticle(ctx context.Context, input model.CreateArticle) (bool, error) {
 	_, err := tools.ValidateAdmin(ctx)
 	if err != nil {
 		return false, err
