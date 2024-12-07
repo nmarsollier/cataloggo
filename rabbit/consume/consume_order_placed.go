@@ -15,7 +15,7 @@ import (
 //	@Tags			Rabbit
 //	@Accept			json
 //	@Produce		json
-//	@Param			order_placed	body	service.ConsumeOrderPlacedMessage	true	"Message order_placed"
+//	@Param			order_placed	body	services.ConsumeOrderPlacedMessage	true	"Message order_placed"
 //	@Router			/rabbit/order_placed [get]
 //
 // Consume Order Placed

@@ -117,7 +117,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.ConsumeOrderPlacedMessage"
+                            "$ref": "#/definitions/services.ConsumeOrderPlacedMessage"
                         }
                     }
                 ],
@@ -140,7 +140,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "bearer {token}",
+                        "description": "Bearer {token}",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
@@ -151,7 +151,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/article.NewArticleData"
+                            "$ref": "#/definitions/article.UpdateArticleData"
                         }
                     }
                 ],
@@ -205,7 +205,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "bearer {token}",
+                        "description": "Bearer {token}",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
@@ -266,7 +266,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "bearer {token}",
+                        "description": "Bearer {token}",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
@@ -277,7 +277,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/article.NewArticleData"
+                            "$ref": "#/definitions/article.UpdateArticleData"
                         }
                     }
                 ],
@@ -329,7 +329,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "bearer {token}",
+                        "description": "Bearer {token}",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
@@ -389,7 +389,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "bearer {token}",
+                        "description": "Bearer {token}",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
@@ -467,7 +467,7 @@ const docTemplate = `{
                 }
             }
         },
-        "article.NewArticleData": {
+        "article.UpdateArticleData": {
             "type": "object",
             "required": [
                 "description",
@@ -610,7 +610,7 @@ const docTemplate = `{
                 }
             }
         },
-        "service.ConsumeOrderPlacedArticle": {
+        "services.ConsumeOrderPlacedArticle": {
             "type": "object",
             "properties": {
                 "articleId": {
@@ -621,13 +621,13 @@ const docTemplate = `{
                 }
             }
         },
-        "service.ConsumeOrderPlacedMessage": {
+        "services.ConsumeOrderPlacedMessage": {
             "type": "object",
             "properties": {
                 "articles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/service.ConsumeOrderPlacedArticle"
+                        "$ref": "#/definitions/services.ConsumeOrderPlacedArticle"
                     }
                 },
                 "cartId": {

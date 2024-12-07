@@ -17,7 +17,7 @@ definitions:
       stock:
         type: integer
     type: object
-  article.NewArticleData:
+  article.UpdateArticleData:
     properties:
       description:
         maxLength: 256
@@ -116,18 +116,18 @@ definitions:
       message:
         $ref: '#/definitions/rschema.ArticleExistMessage'
     type: object
-  service.ConsumeOrderPlacedArticle:
+  services.ConsumeOrderPlacedArticle:
     properties:
       articleId:
         type: string
       quantity:
         type: integer
     type: object
-  service.ConsumeOrderPlacedMessage:
+  services.ConsumeOrderPlacedMessage:
     properties:
       articles:
         items:
-          $ref: '#/definitions/service.ConsumeOrderPlacedArticle'
+          $ref: '#/definitions/services.ConsumeOrderPlacedArticle'
         type: array
       cartId:
         type: string
@@ -209,7 +209,7 @@ paths:
         name: order_placed
         required: true
         schema:
-          $ref: '#/definitions/service.ConsumeOrderPlacedMessage'
+          $ref: '#/definitions/services.ConsumeOrderPlacedMessage'
       produces:
       - application/json
       responses: {}
@@ -222,7 +222,7 @@ paths:
       - application/json
       description: Crear Artículo
       parameters:
-      - description: bearer {token}
+      - description: Bearer {token}
         in: header
         name: Authorization
         required: true
@@ -232,7 +232,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/article.NewArticleData'
+          $ref: '#/definitions/article.UpdateArticleData'
       produces:
       - application/json
       responses:
@@ -265,7 +265,7 @@ paths:
       - application/json
       description: Eliminar Artículo
       parameters:
-      - description: bearer {token}
+      - description: Bearer {token}
         in: header
         name: Authorization
         required: true
@@ -304,7 +304,7 @@ paths:
       - application/json
       description: Obtener un articulo
       parameters:
-      - description: bearer {token}
+      - description: Bearer {token}
         in: header
         name: Authorization
         required: true
@@ -345,7 +345,7 @@ paths:
       - application/json
       description: Actualizar Artículo
       parameters:
-      - description: bearer {token}
+      - description: Bearer {token}
         in: header
         name: Authorization
         required: true
@@ -355,7 +355,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/article.NewArticleData'
+          $ref: '#/definitions/article.UpdateArticleData'
       produces:
       - application/json
       responses:
@@ -388,7 +388,7 @@ paths:
       - application/json
       description: Obtener un articulo
       parameters:
-      - description: bearer {token}
+      - description: Bearer {token}
         in: header
         name: Authorization
         required: true

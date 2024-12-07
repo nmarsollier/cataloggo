@@ -87,7 +87,7 @@ Cuando se recibe el mensage order_placed damos de baja al stock para reservar lo
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| order_placed | body | Message order_placed | Yes | [service.ConsumeOrderPlacedMessage](#serviceconsumeorderplacedmessage) |
+| order_placed | body | Message order_placed | Yes | [services.ConsumeOrderPlacedMessage](#servicesconsumeorderplacedmessage) |
 
 ##### Responses
 
@@ -110,8 +110,8 @@ Crear Artículo
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| Authorization | header | bearer {token} | Yes | string |
-| body | body | Informacion del articulo | Yes | [article.NewArticleData](#articlenewarticledata) |
+| Authorization | header | Bearer {token} | Yes | string |
+| body | body | Informacion del articulo | Yes | [article.UpdateArticleData](#articleupdatearticledata) |
 
 ##### Responses
 
@@ -138,7 +138,7 @@ Eliminar Artículo
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| Authorization | header | bearer {token} | Yes | string |
+| Authorization | header | Bearer {token} | Yes | string |
 | articleId | path | ID de articlo | Yes | string |
 
 ##### Responses
@@ -164,7 +164,7 @@ Obtener un articulo
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| Authorization | header | bearer {token} | Yes | string |
+| Authorization | header | Bearer {token} | Yes | string |
 | articleId | path | ID de articlo | Yes | string |
 
 ##### Responses
@@ -190,8 +190,8 @@ Actualizar Artículo
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| Authorization | header | bearer {token} | Yes | string |
-| body | body | Informacion del articulo | Yes | [article.NewArticleData](#articlenewarticledata) |
+| Authorization | header | Bearer {token} | Yes | string |
+| body | body | Informacion del articulo | Yes | [article.UpdateArticleData](#articleupdatearticledata) |
 
 ##### Responses
 
@@ -218,7 +218,7 @@ Obtener un articulo
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| Authorization | header | bearer {token} | Yes | string |
+| Authorization | header | Bearer {token} | Yes | string |
 | articleId | path | ID de articlo | Yes | string |
 
 ##### Responses
@@ -246,7 +246,7 @@ Obtener un articulo
 | price | number |  | No |
 | stock | integer |  | No |
 
-#### article.NewArticleData
+#### article.UpdateArticleData
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -315,17 +315,17 @@ Obtener un articulo
 | correlation_id | string | *Example:* `"123123"` | No |
 | message | [rschema.ArticleExistMessage](#rschemaarticleexistmessage) |  | No |
 
-#### service.ConsumeOrderPlacedArticle
+#### services.ConsumeOrderPlacedArticle
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | articleId | string |  | No |
 | quantity | integer |  | No |
 
-#### service.ConsumeOrderPlacedMessage
+#### services.ConsumeOrderPlacedMessage
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| articles | [ [service.ConsumeOrderPlacedArticle](#serviceconsumeorderplacedarticle) ] |  | No |
+| articles | [ [services.ConsumeOrderPlacedArticle](#servicesconsumeorderplacedarticle) ] |  | No |
 | cartId | string |  | No |
 | orderId | string |  | No |
