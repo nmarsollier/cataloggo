@@ -444,7 +444,7 @@ const docTemplate = `{
         "article.ArticleData": {
             "type": "object",
             "properties": {
-                "_id": {
+                "id": {
                     "type": "string"
                 },
                 "description": {

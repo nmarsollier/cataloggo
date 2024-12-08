@@ -1,7 +1,7 @@
 package article
 
 type ArticleData struct {
-	ID          string  `json:"_id"`
+	ID          string  `json:"id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Image       string  `json:"image"`
