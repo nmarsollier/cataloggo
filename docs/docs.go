@@ -444,14 +444,14 @@ const docTemplate = `{
         "article.ArticleData": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },
                 "enabled": {
                     "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
                 },
                 "image": {
                     "type": "string"

@@ -238,9 +238,9 @@ Obtener un articulo
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| _id | string |  | No |
 | description | string |  | No |
 | enabled | boolean |  | No |
+| id | string |  | No |
 | image | string |  | No |
 | name | string |  | No |
 | price | number |  | No |

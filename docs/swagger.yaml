@@ -2,12 +2,12 @@ basePath: /v1
 definitions:
   article.ArticleData:
     properties:
-      _id:
-        type: string
       description:
         type: string
       enabled:
         type: boolean
+      id:
+        type: string
       image:
         type: string
       name:
