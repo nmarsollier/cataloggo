@@ -107,18 +107,18 @@ func consumeArticleExist() error {
 
 			newMessage := &rschema.ConsumeArticleExist{}
 			err = json.Unmarshal(body, newMessage)
-			if err == nil {
-				l := logger.WithField(log.LOG_FIELD_CORRELATION_ID, getConsumeArticleExistCorrelationId(newMessage))
-				l.Info("Incoming article_exist :", string(body))
-				services.ProcessArticleData(newMessage, l)
-
-				if err := d.Ack(false); err != nil {
-					l.Info("Failed ACK article_exist :", string(body), err)
-				} else {
-					l.Info("Consumed article_exist :", string(body))
-				}
-			} else {
+			if err != nil {
 				logger.Error(err)
+				return
+			}
+			l := logger.WithField(log.LOG_FIELD_CORRELATION_ID, getConsumeArticleExistCorrelationId(newMessage))
+			l.Info("Incoming article_exist :", string(body))
+			services.ProcessArticleData(newMessage, l)
+
+			if err := d.Ack(false); err != nil {
+				l.Info("Failed ACK article_exist :", string(body), err)
+			} else {
+				l.Info("Consumed article_exist :", string(body))
 			}
 		}
 	}()
