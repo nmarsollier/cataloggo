@@ -10,8 +10,6 @@ import (
 	"github.com/nmarsollier/cataloggo/tools/log"
 )
 
-var tableName = "articles"
-
 var ErrID = errs.NewValidation().Add("id", "Invalid")
 
 func findByCriteria(criteria string, deps ...interface{}) (result []*Article, err error) {
