@@ -13,9 +13,9 @@ type ArticleData struct {
 func toArticleData(article *Article) *ArticleData {
 	return &ArticleData{
 		ID:          article.ID,
-		Name:        article.Description.Name,
-		Description: article.Description.Description,
-		Image:       article.Description.Image,
+		Name:        article.Name,
+		Description: article.Description,
+		Image:       article.Image,
 		Price:       article.Price,
 		Stock:       article.Stock,
 		Enabled:     article.Enabled,
@@ -23,11 +23,11 @@ func toArticleData(article *Article) *ArticleData {
 }
 
 type UpdateArticleData struct {
-	Name string `dynamodbav:"name"  json:"name" validate:"required,min=1,max=100"`
+	Name string `json:"name" validate:"required,min=1,max=100"`
 
-	Description string `dynamodbav:"description" json:"description" validate:"required,min=1,max=256"`
-	Image       string `dynamodbav:"image" json:"image" validate:"max=100"`
+	Description string `json:"description" validate:"required,min=1,max=256"`
+	Image       string `json:"image" validate:"max=100"`
 
-	Price float32 `dynamodbav:"price" json:"price" validate:"required,min=1"`
-	Stock int     `dynamodbav:"stock" json:"stock" validate:"required,min=1"`
+	Price float32 ` json:"price" validate:"required,min=1"`
+	Stock int     ` json:"stock" validate:"required,min=1"`
 }

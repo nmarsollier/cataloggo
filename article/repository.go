@@ -2,11 +2,9 @@ package article
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/jackc/pgx"
 	"github.com/nmarsollier/cataloggo/tools/db"
 	"github.com/nmarsollier/cataloggo/tools/errs"
 	"github.com/nmarsollier/cataloggo/tools/log"
@@ -17,262 +15,191 @@ var tableName = "articles"
 var ErrID = errs.NewValidation().Add("id", "Invalid")
 
 func findByCriteria(criteria string, deps ...interface{}) (result []*Article, err error) {
-	filterExpression := "contains(description.#name, :criteria) OR contains(description.#description, :criteria)"
-	expressionAttributeNames := map[string]string{
-		"#name":        "name",
-		"#description": "description",
-	}
-	expressionAttributeValues := map[string]types.AttributeValue{
-		":criteria": &types.AttributeValueMemberS{
-			Value: criteria,
-		},
-	}
-
-	input := &dynamodb.ScanInput{
-		TableName:                 aws.String(tableName),
-		FilterExpression:          aws.String(filterExpression),
-		ExpressionAttributeNames:  expressionAttributeNames,
-		ExpressionAttributeValues: expressionAttributeValues,
-	}
-
-	output, err := db.Get(deps...).Scan(context.TODO(), input)
+	conn, err := db.GetPostgresClient(deps...)
 	if err != nil {
 		log.Get(deps...).Error(err)
-
-		return
+		return nil, err
 	}
 
-	err = attributevalue.UnmarshalListOfMaps(output.Items, &result)
+	query := `
+        SELECT id, name, description, image, price, stock, created, updated, enabled
+        FROM Articles
+        WHERE name ILIKE $1 OR description ILIKE $1
+    `
+
+	rows, err := conn.Query(context.Background(), query, fmt.Sprintf("%%%s%%", criteria))
 	if err != nil {
 		log.Get(deps...).Error(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var articles []*Article
+	for rows.Next() {
+		var article Article
+		err := rows.Scan(
+			&article.ID,
+			&article.Name,
+			&article.Description,
+			&article.Image,
+			&article.Price,
+			&article.Stock,
+			&article.Created,
+			&article.Updated,
+			&article.Enabled,
+		)
+		if err != nil {
+			log.Get(deps...).Error(err)
+			return nil, err
+		}
+		articles = append(articles, &article)
 	}
 
-	return
+	if rows.Err() != nil {
+		log.Get(deps...).Error(rows.Err())
+		return nil, rows.Err()
+	}
+
+	return articles, nil
 }
 
 func findById(articleId string, deps ...interface{}) (result *Article, err error) {
-	response, err := db.Get(deps...).GetItem(context.TODO(), &dynamodb.GetItemInput{
-		Key: map[string]types.AttributeValue{
-			"id": &types.AttributeValueMemberS{
-				Value: articleId,
-			}},
-		TableName: &tableName,
-	})
-
-	if err != nil || response == nil || response.Item == nil {
-		log.Get(deps...).Error(err)
-
-		return nil, errs.NotFound
-	}
-
-	err = attributevalue.UnmarshalMap(response.Item, &result)
+	conn, err := db.GetPostgresClient(deps...)
 	if err != nil {
 		log.Get(deps...).Error(err)
 
-		return
+		return nil, err
 	}
 
-	return
+	var article Article
+	err = conn.QueryRow(context.Background(), "SELECT id, name, description, image, price, stock, created, updated, enabled FROM Articles WHERE id=$1", articleId).Scan(
+		&article.ID,
+		&article.Name,
+		&article.Description,
+		&article.Image,
+		&article.Price,
+		&article.Stock,
+		&article.Created,
+		&article.Updated,
+		&article.Enabled,
+	)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, errs.NotFound
+		}
+		return nil, err
+	}
+
+	return &article, nil
 }
 
 func insert(article *Article, deps ...interface{}) (err error) {
-	if err = article.validateSchema(); err != nil {
+	if err := article.validateSchema(); err != nil {
 		log.Get(deps...).Error(err)
-
-		return
+		return err
 	}
 
-	articleToInsert, err := attributevalue.MarshalMap(article)
+	conn, err := db.GetPostgresClient(deps...)
 	if err != nil {
 		log.Get(deps...).Error(err)
-
-		return
+		return err
 	}
 
-	_, err = db.Get(deps...).PutItem(
-		context.TODO(),
-		&dynamodb.PutItemInput{
-			TableName: &tableName,
-			Item:      articleToInsert,
-		},
+	query := `
+        INSERT INTO Articles (id, name, description, image, price, stock, created, updated, enabled)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `
+
+	_, err = conn.Exec(context.Background(), query,
+		article.ID,
+		article.Name,
+		article.Description,
+		article.Image,
+		article.Price,
+		article.Stock,
+		article.Created,
+		article.Updated,
+		article.Enabled,
 	)
-	return
+	if err != nil {
+		log.Get(deps...).Error(err)
+		return err
+	}
+
+	return nil
 }
 
 // disable Deshabilita el articulo para que no se pueda usar mas
 func Disable(articleId string, deps ...interface{}) (err error) {
-	key, err := attributevalue.MarshalMap(map[string]interface{}{
-		"id": articleId,
-	})
+	conn, err := db.GetPostgresClient(deps...)
 	if err != nil {
 		log.Get(deps...).Error(err)
-
-		return
+		return err
 	}
 
-	update, err := attributevalue.MarshalMap(map[string]interface{}{
-		":enabled": false,
-	})
+	query := `
+        UPDATE Articles
+        SET enabled = $1
+        WHERE id = $2
+    `
+
+	_, err = conn.Exec(context.Background(), query, false, articleId)
 	if err != nil {
 		log.Get(deps...).Error(err)
-
-		return
+		return err
 	}
 
-	_, err = db.Get(deps...).UpdateItem(
-		context.TODO(),
-		&dynamodb.UpdateItemInput{
-			TableName:                 &tableName,
-			Key:                       key,
-			UpdateExpression:          aws.String("SET enabled = :enabled"),
-			ExpressionAttributeValues: update,
-		},
-	)
-
-	if err != nil {
-		log.Get(deps...).Error(err)
-	}
-
-	return
+	return nil
 }
 
 // Actualiza la descripción de un articulo.
-func updateDescription(articleId string, description Description, deps ...interface{}) (err error) {
-	key, err := attributevalue.MarshalMap(map[string]interface{}{
-		"id": articleId,
-	})
+func update(articleId string, article UpdateArticleData, deps ...interface{}) (err error) {
+	conn, err := db.GetPostgresClient(deps...)
 	if err != nil {
 		log.Get(deps...).Error(err)
-
-		return
-	}
-
-	update, err := attributevalue.MarshalMap(map[string]interface{}{
-		":description": description,
-	})
-	if err != nil {
-		log.Get(deps...).Error(err)
-
-		return
-	}
-
-	_, err = db.Get(deps...).UpdateItem(
-		context.TODO(),
-		&dynamodb.UpdateItemInput{
-			TableName:                 &tableName,
-			Key:                       key,
-			UpdateExpression:          aws.String("SET description = :description"),
-			ExpressionAttributeValues: update,
-		},
-	)
-
-	if err != nil {
-		log.Get(deps...).Error(err)
-	}
-	return
-}
-
-// Actualiza el precio de un articulo.
-func updatePrice(articleId string, price float32, deps ...interface{}) (err error) {
-	key, err := attributevalue.MarshalMap(map[string]interface{}{
-		"id": articleId,
-	})
-	if err != nil {
-		log.Get(deps...).Error(err)
-
-		return
-	}
-
-	update, err := attributevalue.MarshalMap(map[string]interface{}{
-		":price": price,
-	})
-	if err != nil {
-		log.Get(deps...).Error(err)
-
-		return
-	}
-
-	_, err = db.Get(deps...).UpdateItem(
-		context.TODO(),
-		&dynamodb.UpdateItemInput{
-			TableName:                 &tableName,
-			Key:                       key,
-			UpdateExpression:          aws.String("SET price = :price"),
-			ExpressionAttributeValues: update,
-		},
-	)
-	if err != nil {
-		log.Get(deps...).Error(err)
-	}
-	return
-}
-
-// Actualiza el stock de un articulo.
-func updateStock(articleId string, stock int, deps ...interface{}) (err error) {
-	key, err := attributevalue.MarshalMap(map[string]interface{}{
-		"id": articleId,
-	})
-	if err != nil {
-		log.Get(deps...).Error(err)
-
 		return err
 	}
 
-	update, err := attributevalue.MarshalMap(map[string]interface{}{
-		":stock": stock,
-	})
-	if err != nil {
-		log.Get(deps...).Error(err)
+	query := `
+        UPDATE Articles
+        SET name = $1, description = $2, image = $3, price = $4, stock = $5, updated = NOW()
+        WHERE id = $7
+    `
 
-		return err
-	}
-
-	_, err = db.Get(deps...).UpdateItem(
-		context.TODO(),
-		&dynamodb.UpdateItemInput{
-			TableName:                 &tableName,
-			Key:                       key,
-			UpdateExpression:          aws.String("SET stock = :stock"),
-			ExpressionAttributeValues: update,
-		},
+	_, err = conn.Exec(context.Background(), query,
+		article.Name,
+		article.Description,
+		article.Image,
+		article.Price,
+		article.Stock,
+		articleId,
 	)
 	if err != nil {
 		log.Get(deps...).Error(err)
+		return err
 	}
+
 	return nil
 }
 
 func DecrementStock(articleId string, amount int, deps ...interface{}) (err error) {
-	key, err := attributevalue.MarshalMap(map[string]interface{}{
-		"id": articleId,
-	})
+	conn, err := db.GetPostgresClient(deps...)
 	if err != nil {
 		log.Get(deps...).Error(err)
-
 		return err
 	}
 
-	update, err := attributevalue.MarshalMap(map[string]interface{}{
-		":decrement": amount,
-	})
+	query := `
+        UPDATE Articles
+        SET stock = stock - $1
+        WHERE id = $2
+    `
+
+	_, err = conn.Exec(context.Background(), query, amount, articleId)
 	if err != nil {
 		log.Get(deps...).Error(err)
-
 		return err
 	}
 
-	_, err = db.Get(deps...).UpdateItem(
-		context.TODO(),
-		&dynamodb.UpdateItemInput{
-			TableName:                 &tableName,
-			Key:                       key,
-			UpdateExpression:          aws.String("SET stock = stock - :decrement"),
-			ExpressionAttributeValues: update,
-		},
-	)
-	if err != nil {
-		log.Get(deps...).Error(err)
-
-	}
-	return
+	return nil
 }

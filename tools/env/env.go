@@ -12,9 +12,7 @@ type Configuration struct {
 	RabbitURL         string `json:"rabbitUrl"`
 	SecurityServerURL string `json:"securityServerUrl"`
 	FluentUrl         string `json:"fluentUrl"`
-	AwsAccessKeyId    string `json:"AwsAccessKeyId"`
-	AwsSecret         string `json:"AwsSecret"`
-	AwsRegion         string `json:"AwsRegion"`
+	PostgresURL       string `json:"postgresUrl"`
 }
 
 var config *Configuration
@@ -26,9 +24,7 @@ func new() *Configuration {
 		RabbitURL:         "amqp://localhost",
 		SecurityServerURL: "http://localhost:3000",
 		FluentUrl:         "localhost:24224",
-		AwsAccessKeyId:    "placeholder_value",
-		AwsSecret:         "placeholder_value",
-		AwsRegion:         "placeholder_value",
+		PostgresURL:       "postgres://postgres@localhost:5432/postgres",
 	}
 }
 
@@ -49,17 +45,10 @@ func load() *Configuration {
 		result.RabbitURL = value
 	}
 
-	if value := os.Getenv("AWS_ACCESS_KEY_ID"); len(value) > 0 {
-		result.AwsAccessKeyId = value
+	if value := os.Getenv("POSTGRES_URL"); len(value) > 0 {
+		result.PostgresURL = value
 	}
 
-	if value := os.Getenv("AWS_SECRET_ACCESS_KEY"); len(value) > 0 {
-		result.AwsSecret = value
-	}
-
-	if value := os.Getenv("AWS_REGION"); len(value) > 0 {
-		result.AwsRegion = value
-	}
 	if value := os.Getenv("PORT"); len(value) > 0 {
 		if intVal, err := strconv.Atoi(value); err == nil {
 			result.Port = intVal
