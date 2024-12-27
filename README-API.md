@@ -8,6 +8,143 @@ Nestor Marsollier
 nmarsollier@gmail.com  
 
 ---
+### /articles
+
+#### POST
+##### Summary
+
+Crear Artículo
+
+##### Description
+
+Crear Artículo
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| Authorization | header | Bearer {token} | Yes | string |
+| body | body | Informacion del articulo | Yes | [article.UpdateArticleData](#articleupdatearticledata) |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Articulo | [article.ArticleData](#articlearticledata) |
+| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
+| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
+| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
+| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
+
+### /articles/:articleId
+
+#### DELETE
+##### Summary
+
+Eliminar Artículo
+
+##### Description
+
+Eliminar Artículo
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| Authorization | header | Bearer {token} | Yes | string |
+| articleId | path | ID de articlo | Yes | string |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | No Content |  |
+| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
+| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
+| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
+| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
+
+#### GET
+##### Summary
+
+Obtener un articulo
+
+##### Description
+
+Obtener un articulo
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| Authorization | header | Bearer {token} | Yes | string |
+| articleId | path | ID de articlo | Yes | string |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Articulo | [article.ArticleData](#articlearticledata) |
+| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
+| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
+| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
+| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
+
+#### POST
+##### Summary
+
+Actualizar Artículo
+
+##### Description
+
+Actualizar Artículo
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| Authorization | header | Bearer {token} | Yes | string |
+| body | body | Informacion del articulo | Yes | [article.UpdateArticleData](#articleupdatearticledata) |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Articulo | [article.ArticleData](#articlearticledata) |
+| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
+| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
+| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
+| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
+
+### /articles/search/:criteria
+
+#### GET
+##### Summary
+
+Obtener un articulo
+
+##### Description
+
+Obtener un articulo
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| Authorization | header | Bearer {token} | Yes | string |
+| articleId | path | ID de articlo | Yes | string |
+
+##### Responses
+
+| Code | Description | Schema |
+| ---- | ----------- | ------ |
+| 200 | Articulos | [ [article.ArticleData](#articlearticledata) ] |
+| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
+| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
+| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
+| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
+
+---
 ### /rabbit/article_exist
 
 #### GET
@@ -87,149 +224,12 @@ Cuando se recibe el mensage order_placed damos de baja al stock para reservar lo
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| order_placed | body | Message order_placed | Yes | [service.ConsumeOrderPlacedMessage](#serviceconsumeorderplacedmessage) |
+| order_placed | body | Message order_placed | Yes | [services.ConsumeOrderPlacedMessage](#servicesconsumeorderplacedmessage) |
 
 ##### Responses
 
 | Code | Description |
 | ---- | ----------- |
-
----
-### /v1/articles
-
-#### POST
-##### Summary
-
-Crear Artículo
-
-##### Description
-
-Crear Artículo
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ------ |
-| Authorization | header | bearer {token} | Yes | string |
-| body | body | Informacion del articulo | Yes | [article.NewArticleData](#articlenewarticledata) |
-
-##### Responses
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Articulo | [article.ArticleData](#articlearticledata) |
-| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
-| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
-| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
-| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
-
-### /v1/articles/:articleId
-
-#### DELETE
-##### Summary
-
-Eliminar Artículo
-
-##### Description
-
-Eliminar Artículo
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ------ |
-| Authorization | header | bearer {token} | Yes | string |
-| articleId | path | ID de articlo | Yes | string |
-
-##### Responses
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | No Content |  |
-| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
-| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
-| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
-| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
-
-#### GET
-##### Summary
-
-Obtener un articulo
-
-##### Description
-
-Obtener un articulo
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ------ |
-| Authorization | header | bearer {token} | Yes | string |
-| articleId | path | ID de articlo | Yes | string |
-
-##### Responses
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Articulo | [article.ArticleData](#articlearticledata) |
-| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
-| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
-| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
-| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
-
-#### POST
-##### Summary
-
-Actualizar Artículo
-
-##### Description
-
-Actualizar Artículo
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ------ |
-| Authorization | header | bearer {token} | Yes | string |
-| body | body | Informacion del articulo | Yes | [article.NewArticleData](#articlenewarticledata) |
-
-##### Responses
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Articulo | [article.ArticleData](#articlearticledata) |
-| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
-| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
-| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
-| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
-
-### /v1/articles/search/:criteria
-
-#### GET
-##### Summary
-
-Obtener un articulo
-
-##### Description
-
-Obtener un articulo
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ------ |
-| Authorization | header | bearer {token} | Yes | string |
-| articleId | path | ID de articlo | Yes | string |
-
-##### Responses
-
-| Code | Description | Schema |
-| ---- | ----------- | ------ |
-| 200 | Articulos | [ [article.ArticleData](#articlearticledata) ] |
-| 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
-| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
-| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
-| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
 
 ---
 ### Models
@@ -246,7 +246,7 @@ Obtener un articulo
 | price | number |  | No |
 | stock | integer |  | No |
 
-#### article.NewArticleData
+#### article.UpdateArticleData
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
@@ -315,17 +315,17 @@ Obtener un articulo
 | correlation_id | string | *Example:* `"123123"` | No |
 | message | [rschema.ArticleExistMessage](#rschemaarticleexistmessage) |  | No |
 
-#### service.ConsumeOrderPlacedArticle
+#### services.ConsumeOrderPlacedArticle
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | articleId | string |  | No |
 | quantity | integer |  | No |
 
-#### service.ConsumeOrderPlacedMessage
+#### services.ConsumeOrderPlacedMessage
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| articles | [ [service.ConsumeOrderPlacedArticle](#serviceconsumeorderplacedarticle) ] |  | No |
+| articles | [ [services.ConsumeOrderPlacedArticle](#servicesconsumeorderplacedarticle) ] |  | No |
 | cartId | string |  | No |
 | orderId | string |  | No |

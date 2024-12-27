@@ -18,6 +18,321 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/articles": {
+            "post": {
+                "description": "Crear Artículo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Catalogo"
+                ],
+                "summary": "Crear Artículo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Informacion del articulo",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/article.UpdateArticleData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Articulo",
+                        "schema": {
+                            "$ref": "#/definitions/article.ArticleData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ValidationErr"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    }
+                }
+            }
+        },
+        "/articles/:articleId": {
+            "get": {
+                "description": "Obtener un articulo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Catalogo"
+                ],
+                "summary": "Obtener un articulo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID de articlo",
+                        "name": "articleId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Articulo",
+                        "schema": {
+                            "$ref": "#/definitions/article.ArticleData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ValidationErr"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Actualizar Artículo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Catalogo"
+                ],
+                "summary": "Actualizar Artículo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Informacion del articulo",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/article.UpdateArticleData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Articulo",
+                        "schema": {
+                            "$ref": "#/definitions/article.ArticleData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ValidationErr"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Eliminar Artículo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Catalogo"
+                ],
+                "summary": "Eliminar Artículo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID de articlo",
+                        "name": "articleId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ValidationErr"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    }
+                }
+            }
+        },
+        "/articles/search/:criteria": {
+            "get": {
+                "description": "Obtener un articulo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Catalogo"
+                ],
+                "summary": "Obtener un articulo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID de articlo",
+                        "name": "articleId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Articulos",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/article.ArticleData"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ValidationErr"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/engine.ErrorData"
+                        }
+                    }
+                }
+            }
+        },
         "/rabbit/article_exist": {
             "get": {
                 "description": "Otros microservicios nos solicitan validar articulos en el catalogo.",
@@ -117,326 +432,11 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.ConsumeOrderPlacedMessage"
+                            "$ref": "#/definitions/services.ConsumeOrderPlacedMessage"
                         }
                     }
                 ],
                 "responses": {}
-            }
-        },
-        "/v1/articles": {
-            "post": {
-                "description": "Crear Artículo",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Catalogo"
-                ],
-                "summary": "Crear Artículo",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "bearer {token}",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "Informacion del articulo",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/article.NewArticleData"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Articulo",
-                        "schema": {
-                            "$ref": "#/definitions/article.ArticleData"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/errs.ValidationErr"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/articles/:articleId": {
-            "get": {
-                "description": "Obtener un articulo",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Catalogo"
-                ],
-                "summary": "Obtener un articulo",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "bearer {token}",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "ID de articlo",
-                        "name": "articleId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Articulo",
-                        "schema": {
-                            "$ref": "#/definitions/article.ArticleData"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/errs.ValidationErr"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Actualizar Artículo",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Catalogo"
-                ],
-                "summary": "Actualizar Artículo",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "bearer {token}",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "Informacion del articulo",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/article.NewArticleData"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Articulo",
-                        "schema": {
-                            "$ref": "#/definitions/article.ArticleData"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/errs.ValidationErr"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Eliminar Artículo",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Catalogo"
-                ],
-                "summary": "Eliminar Artículo",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "bearer {token}",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "ID de articlo",
-                        "name": "articleId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/errs.ValidationErr"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/articles/search/:criteria": {
-            "get": {
-                "description": "Obtener un articulo",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Catalogo"
-                ],
-                "summary": "Obtener un articulo",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "bearer {token}",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "ID de articlo",
-                        "name": "articleId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Articulos",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/article.ArticleData"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/errs.ValidationErr"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
-                        }
-                    }
-                }
             }
         }
     },
@@ -467,7 +467,7 @@ const docTemplate = `{
                 }
             }
         },
-        "article.NewArticleData": {
+        "article.UpdateArticleData": {
             "type": "object",
             "required": [
                 "description",
@@ -610,7 +610,7 @@ const docTemplate = `{
                 }
             }
         },
-        "service.ConsumeOrderPlacedArticle": {
+        "services.ConsumeOrderPlacedArticle": {
             "type": "object",
             "properties": {
                 "articleId": {
@@ -621,13 +621,13 @@ const docTemplate = `{
                 }
             }
         },
-        "service.ConsumeOrderPlacedMessage": {
+        "services.ConsumeOrderPlacedMessage": {
             "type": "object",
             "properties": {
                 "articles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/service.ConsumeOrderPlacedArticle"
+                        "$ref": "#/definitions/services.ConsumeOrderPlacedArticle"
                     }
                 },
                 "cartId": {
