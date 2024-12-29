@@ -1,11 +1,10 @@
 package server
 
 import (
-	"strings"
-
 	"github.com/gin-gonic/gin"
 	"github.com/nmarsollier/commongo/errs"
 	"github.com/nmarsollier/commongo/log"
+	"github.com/nmarsollier/commongo/rst"
 	"github.com/nmarsollier/commongo/security"
 )
 
@@ -20,11 +19,11 @@ func ValidateAuthentication(c *gin.Context) {
 	}
 
 	deps := GinDi(c)
-	c.Set("logger", deps.Logger().WithField(log.LOG_FIELD_USER_ID, user.ID))
+	deps.Logger().WithField(log.LOG_FIELD_USER_ID, user.ID)
 }
 
 func validateToken(c *gin.Context) (*security.User, error) {
-	tokenString, err := getHeaderToken(c)
+	tokenString, err := rst.GetHeaderToken(c)
 	if err != nil {
 		return nil, errs.Unauthorized
 	}
@@ -36,13 +35,4 @@ func validateToken(c *gin.Context) (*security.User, error) {
 	}
 
 	return user, nil
-}
-
-// get token from Authorization header
-func getHeaderToken(c *gin.Context) (string, error) {
-	tokenString := c.GetHeader("Authorization")
-	if strings.Index(strings.ToUpper(tokenString), "BEARER ") != 0 {
-		return "", errs.Unauthorized
-	}
-	return tokenString[7:], nil
 }
