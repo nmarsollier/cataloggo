@@ -5,7 +5,6 @@ import (
 
 	"github.com/nmarsollier/commongo/log"
 	"github.com/nmarsollier/commongo/security"
-	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
 )
 
@@ -125,7 +124,6 @@ func (r *logoutConsumer) ConsumeLogout() error {
 			newMessage := &logoutMessage{}
 			err = json.Unmarshal(body, newMessage)
 			if err == nil {
-				r.logger.WithField(log.LOG_FIELD_CORRELATION_ID, getCorrelationId(newMessage))
 				r.logger.Info("Incoming :", string(body))
 
 				r.secService.Invalidate(newMessage.Message)
@@ -144,14 +142,4 @@ func (r *logoutConsumer) ConsumeLogout() error {
 type logoutMessage struct {
 	CorrelationId string `json:"correlation_id" example:"123123" `
 	Message       string `json:"message" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg"`
-}
-
-func getCorrelationId(c *logoutMessage) string {
-	value := c.CorrelationId
-
-	if len(value) == 0 {
-		value = uuid.NewV4().String()
-	}
-
-	return value
 }

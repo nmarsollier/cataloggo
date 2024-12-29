@@ -109,7 +109,7 @@ func (i *Deps) SecurityService() security.SecurityService {
 	if i.CurrSecSvc != nil {
 		return i.CurrSecSvc
 	}
-	i.CurrSecRepo = security.NewSecurityRepository(i.Logger(), i.HttpClient(), env.Get().SecurityServerURL)
+	i.CurrSecSvc = security.NewSecurityService(i.Logger(), i.SecurityRepository())
 	return i.CurrSecSvc
 }
 
@@ -187,7 +187,7 @@ func (i *Deps) CatalogService() services.CatalogService {
 	if catalogService != nil {
 		return catalogService
 	}
-	catalogService = services.NewCatalogService(i.ArticleService(), i.ArticleExistPublisher())
+	catalogService = services.NewCatalogService(i.Logger(), i.ArticleService(), i.ArticleExistPublisher())
 	return catalogService
 }
 

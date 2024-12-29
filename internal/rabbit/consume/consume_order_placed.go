@@ -6,7 +6,6 @@ import (
 	"github.com/nmarsollier/cataloggo/internal/env"
 	"github.com/nmarsollier/cataloggo/internal/services"
 	"github.com/nmarsollier/commongo/log"
-	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
 )
 
@@ -118,7 +117,6 @@ func (r *orderPlacedConsumer) ConsumeOrderPlaced() error {
 			articleMessage := &services.ConsumeOrderPlaced{}
 			err = json.Unmarshal(body, articleMessage)
 			if err == nil {
-				r.logger.WithField(log.LOG_FIELD_CORRELATION_ID, getConsumeOrderPlacedCorrelationId(articleMessage))
 				r.logger.Info("Incoming order_placed :", string(body))
 
 				r.service.ProcessOrderPlaced(articleMessage)
@@ -137,14 +135,4 @@ func (r *orderPlacedConsumer) ConsumeOrderPlaced() error {
 	r.logger.Info("Closed connection: ", <-conn.NotifyClose(make(chan *amqp.Error)))
 
 	return nil
-}
-
-func getConsumeOrderPlacedCorrelationId(c *services.ConsumeOrderPlaced) string {
-	value := c.CorrelationId
-
-	if len(value) == 0 {
-		value = uuid.NewV4().String()
-	}
-
-	return value
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/nmarsollier/cataloggo/internal/services"
 	"github.com/nmarsollier/commongo/log"
 
-	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
 )
 
@@ -117,7 +116,7 @@ func (r *articleExistConsumer) ConsumeArticleExist() error {
 		return err
 	}
 
-	r.log.Info("RabbitMQ consumeOrdersChannel conectado")
+	r.log.Info("RabbitMQ ConsumeArticleExist conectado")
 
 	go func() {
 		for d := range mgs {
@@ -126,14 +125,13 @@ func (r *articleExistConsumer) ConsumeArticleExist() error {
 			newMessage := &rschema.ConsumeArticleExist{}
 			err = json.Unmarshal(body, newMessage)
 			if err == nil {
-				l := r.log.WithField(log.LOG_FIELD_CORRELATION_ID, getConsumeArticleExistCorrelationId(newMessage))
-				l.Info("Incoming article_exist :", string(body))
+				r.log.Info("Incoming article_exist :", string(body))
 				r.service.ProcessArticleData(newMessage)
 
 				if err := d.Ack(false); err != nil {
-					l.Info("Failed ACK article_exist :", string(body), err)
+					r.log.Info("Failed ACK article_exist :", string(body), err)
 				} else {
-					l.Info("Consumed article_exist :", string(body))
+					r.log.Info("Consumed article_exist :", string(body))
 				}
 			} else {
 				r.log.Error(err)
@@ -144,14 +142,4 @@ func (r *articleExistConsumer) ConsumeArticleExist() error {
 	r.log.Info("Closed connection: ", <-conn.NotifyClose(make(chan *amqp.Error)))
 
 	return nil
-}
-
-func getConsumeArticleExistCorrelationId(c *rschema.ConsumeArticleExist) string {
-	value := c.CorrelationId
-
-	if len(value) == 0 {
-		value = uuid.NewV4().String()
-	}
-
-	return value
 }
