@@ -2,15 +2,17 @@ package di
 
 import (
 	"github.com/nmarsollier/cataloggo/internal/article"
-	"github.com/nmarsollier/cataloggo/internal/engine/db"
-	"github.com/nmarsollier/cataloggo/internal/engine/env"
-	"github.com/nmarsollier/cataloggo/internal/engine/httpx"
-	"github.com/nmarsollier/cataloggo/internal/engine/log"
+	"github.com/nmarsollier/cataloggo/internal/env"
 	"github.com/nmarsollier/cataloggo/internal/rabbit/consume"
-	"github.com/nmarsollier/cataloggo/internal/rabbit/emit"
-	"github.com/nmarsollier/cataloggo/internal/security"
+	"github.com/nmarsollier/cataloggo/internal/rabbit/rschema"
 	"github.com/nmarsollier/cataloggo/internal/services"
+	"github.com/nmarsollier/commongo/db"
+	"github.com/nmarsollier/commongo/httpx"
+	"github.com/nmarsollier/commongo/log"
+	"github.com/nmarsollier/commongo/rbt"
+	"github.com/nmarsollier/commongo/security"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/x/mongo/driver/topology"
 )
 
 // Singletons
@@ -21,7 +23,6 @@ var articleConsumer consume.ArticleExistConsumer
 var logoutConsumer consume.LogoutConsumer
 var orderPlacedConsumer consume.OrderPlacedConsumer
 var catalogService services.CatalogService
-var emiter emit.RabbitEmitter
 
 type Injector interface {
 	Logger() log.LogRusEntry
@@ -36,7 +37,7 @@ type Injector interface {
 	LogoutConsumer() consume.LogoutConsumer
 	OrderPlacedConsumer() consume.OrderPlacedConsumer
 	CatalogService() services.CatalogService
-	RabbitEmit() emit.RabbitEmitter
+	ArticleExistPublisher() rschema.ArticleExistPublisher
 }
 
 type Deps struct {
@@ -52,7 +53,7 @@ type Deps struct {
 	CurrLogoutConsumer    consume.LogoutConsumer
 	CurrOrderPlaced       consume.OrderPlacedConsumer
 	CurrCatalogServices   services.CatalogService
-	CurrEmit              emit.RabbitEmitter
+	CurrArtExistPublisher rschema.ArticleExistPublisher
 }
 
 func NewInjector(log log.LogRusEntry) Injector {
@@ -100,7 +101,7 @@ func (i *Deps) SecurityRepository() security.SecurityRepository {
 	if i.CurrSecRepo != nil {
 		return i.CurrSecRepo
 	}
-	i.CurrSecRepo = security.NewSecurityRepository(i.Logger(), i.HttpClient())
+	i.CurrSecRepo = security.NewSecurityRepository(i.Logger(), i.HttpClient(), env.Get().SecurityServerURL)
 	return i.CurrSecRepo
 }
 
@@ -108,7 +109,7 @@ func (i *Deps) SecurityService() security.SecurityService {
 	if i.CurrSecSvc != nil {
 		return i.CurrSecSvc
 	}
-	i.CurrSecSvc = security.NewSecurityService(i.Logger(), i.SecurityRepository())
+	i.CurrSecRepo = security.NewSecurityRepository(i.Logger(), i.HttpClient(), env.Get().SecurityServerURL)
 	return i.CurrSecSvc
 }
 
@@ -121,7 +122,7 @@ func (i *Deps) CatalogCollection() db.Collection {
 		return catalogCollection
 	}
 
-	userCollection, err := db.NewCollection(i.CurrLog, i.Database(), "catalog")
+	userCollection, err := db.NewCollection(i.CurrLog, i.Database(), "catalog", IsDbTimeoutError)
 	if err != nil {
 		i.CurrLog.Fatal(err)
 		return nil
@@ -186,17 +187,35 @@ func (i *Deps) CatalogService() services.CatalogService {
 	if catalogService != nil {
 		return catalogService
 	}
-	catalogService = services.NewCatalogService(i.ArticleService(), i.RabbitEmit())
+	catalogService = services.NewCatalogService(i.ArticleService(), i.ArticleExistPublisher())
 	return catalogService
 }
 
-func (i *Deps) RabbitEmit() emit.RabbitEmitter {
-	if i.CurrEmit != nil {
-		return i.CurrEmit
+// IsDbTimeoutError función a llamar cuando se produce un error de db
+func IsDbTimeoutError(err error) {
+	if err == topology.ErrServerSelectionTimeout {
+		database = nil
+		catalogCollection = nil
 	}
-	if emiter != nil {
-		return emiter
+}
+
+func (i *Deps) ArticleExistPublisher() rschema.ArticleExistPublisher {
+	if i.CurrArtExistPublisher != nil {
+		return i.CurrArtExistPublisher
 	}
-	emiter = emit.NewRabbitEmitter(env.Get().RabbitURL)
-	return emiter
+
+	logger := i.Logger().
+		WithField(log.LOG_FIELD_CONTROLLER, "Rabbit").
+		WithField(log.LOG_FIELD_RABBIT_ACTION, "Emit").
+		WithField(log.LOG_FIELD_RABBIT_EXCHANGE, "article_exist")
+
+	i.CurrArtExistPublisher, _ = rbt.NewRabbitPublisher[*rschema.ArticleExistMessage](
+		logger,
+		env.Get().RabbitURL,
+		"",
+		"direct",
+		"",
+	)
+
+	return i.CurrArtExistPublisher
 }

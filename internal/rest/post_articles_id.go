@@ -3,7 +3,8 @@ package rest
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/nmarsollier/cataloggo/internal/article"
-	"github.com/nmarsollier/cataloggo/internal/rest/engine"
+	"github.com/nmarsollier/cataloggo/internal/rest/server"
+	"github.com/nmarsollier/commongo/rst"
 )
 
 //	@Summary		Actualizar Artículo
@@ -15,16 +16,16 @@ import (
 //	@Param			body			body		article.UpdateArticleData	true	"Informacion del articulo"
 //	@Success		200				{object}	article.ArticleData			"Articulo"
 //	@Failure		400				{object}	errs.ValidationErr			"Bad Request"
-//	@Failure		401				{object}	engine.ErrorData			"Unauthorized"
-//	@Failure		404				{object}	engine.ErrorData			"Not Found"
-//	@Failure		500				{object}	engine.ErrorData			"Internal Server Error"
+//	@Failure		401				{object}	rst.ErrorData				"Unauthorized"
+//	@Failure		404				{object}	rst.ErrorData				"Not Found"
+//	@Failure		500				{object}	rst.ErrorData				"Internal Server Error"
 //	@Router			/articles/:articleId [post]
 //
 // Actualizar Artículo
-func init() {
-	engine.Router().POST(
+func initPostArticlesId(engine *gin.Engine) {
+	engine.POST(
 		"/articles/:articleId",
-		engine.ValidateAuthentication,
+		server.ValidateAuthentication,
 		updateArticle,
 	)
 }
@@ -32,15 +33,15 @@ func init() {
 func updateArticle(c *gin.Context) {
 	body := article.UpdateArticleData{}
 	if err := c.ShouldBindJSON(&body); err != nil {
-		engine.AbortWithError(c, err)
+		rst.AbortWithError(c, err)
 		return
 	}
 	articleId := c.Param("articleId")
 
-	deps := engine.GinDi(c)
+	deps := server.GinDi(c)
 	err := deps.ArticleService().UpdateArticle(articleId, &body)
 	if err != nil {
-		engine.AbortWithError(c, err)
+		rst.AbortWithError(c, err)
 		return
 	}
 

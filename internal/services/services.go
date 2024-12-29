@@ -2,7 +2,6 @@ package services
 
 import (
 	"github.com/nmarsollier/cataloggo/internal/article"
-	"github.com/nmarsollier/cataloggo/internal/rabbit/emit"
 	"github.com/nmarsollier/cataloggo/internal/rabbit/rschema"
 )
 
@@ -11,22 +10,22 @@ type CatalogService interface {
 	ProcessOrderPlaced(data *ConsumeOrderPlaced)
 }
 
-func NewCatalogService(catalogService article.ArticleService, emit emit.RabbitEmitter) CatalogService {
+func NewCatalogService(catalogService article.ArticleService, publisher rschema.ArticleExistPublisher) CatalogService {
 	return &catService{
 		catalogService: catalogService,
-		emit:           emit,
+		emit:           publisher,
 	}
 }
 
 type catService struct {
 	catalogService article.ArticleService
-	emit           emit.RabbitEmitter
+	emit           rschema.ArticleExistPublisher
 }
 
 func (s *catService) ProcessArticleData(data *rschema.ConsumeArticleExist) {
 	article, err := s.catalogService.FindById(data.Message.ArticleId)
 	if err != nil {
-		s.emit.EmitArticleExist(data.Exchange, data.RoutingKey, &rschema.ArticleExistMessage{
+		s.emit.PublishTo(data.Exchange, data.RoutingKey, &rschema.ArticleExistMessage{
 			ArticleId:   data.Message.ArticleId,
 			ReferenceId: data.Message.ReferenceId,
 			Valid:       false,
@@ -34,7 +33,7 @@ func (s *catService) ProcessArticleData(data *rschema.ConsumeArticleExist) {
 		return
 	}
 
-	s.emit.EmitArticleExist(data.Exchange, data.RoutingKey, &rschema.ArticleExistMessage{
+	s.emit.PublishTo(data.Exchange, data.RoutingKey, &rschema.ArticleExistMessage{
 		ArticleId:   data.Message.ArticleId,
 		ReferenceId: data.Message.ReferenceId,
 		Stock:       article.Stock,

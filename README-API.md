@@ -32,9 +32,9 @@ Crear Artículo
 | ---- | ----------- | ------ |
 | 200 | Articulo | [article.ArticleData](#articlearticledata) |
 | 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
-| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
-| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
-| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
+| 401 | Unauthorized | [rst.ErrorData](#rsterrordata) |
+| 404 | Not Found | [rst.ErrorData](#rsterrordata) |
+| 500 | Internal Server Error | [rst.ErrorData](#rsterrordata) |
 
 ### /articles/:articleId
 
@@ -60,9 +60,9 @@ Eliminar Artículo
 | ---- | ----------- | ------ |
 | 200 | No Content |  |
 | 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
-| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
-| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
-| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
+| 401 | Unauthorized | [rst.ErrorData](#rsterrordata) |
+| 404 | Not Found | [rst.ErrorData](#rsterrordata) |
+| 500 | Internal Server Error | [rst.ErrorData](#rsterrordata) |
 
 #### GET
 ##### Summary
@@ -86,9 +86,9 @@ Obtener un articulo
 | ---- | ----------- | ------ |
 | 200 | Articulo | [article.ArticleData](#articlearticledata) |
 | 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
-| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
-| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
-| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
+| 401 | Unauthorized | [rst.ErrorData](#rsterrordata) |
+| 404 | Not Found | [rst.ErrorData](#rsterrordata) |
+| 500 | Internal Server Error | [rst.ErrorData](#rsterrordata) |
 
 #### POST
 ##### Summary
@@ -112,9 +112,9 @@ Actualizar Artículo
 | ---- | ----------- | ------ |
 | 200 | Articulo | [article.ArticleData](#articlearticledata) |
 | 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
-| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
-| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
-| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
+| 401 | Unauthorized | [rst.ErrorData](#rsterrordata) |
+| 404 | Not Found | [rst.ErrorData](#rsterrordata) |
+| 500 | Internal Server Error | [rst.ErrorData](#rsterrordata) |
 
 ### /articles/search/:criteria
 
@@ -140,9 +140,9 @@ Obtener un articulo
 | ---- | ----------- | ------ |
 | 200 | Articulos | [ [article.ArticleData](#articlearticledata) ] |
 | 400 | Bad Request | [errs.ValidationErr](#errsvalidationerr) |
-| 401 | Unauthorized | [engine.ErrorData](#engineerrordata) |
-| 404 | Not Found | [engine.ErrorData](#engineerrordata) |
-| 500 | Internal Server Error | [engine.ErrorData](#engineerrordata) |
+| 401 | Unauthorized | [rst.ErrorData](#rsterrordata) |
+| 404 | Not Found | [rst.ErrorData](#rsterrordata) |
+| 500 | Internal Server Error | [rst.ErrorData](#rsterrordata) |
 
 ---
 ### /rabbit/article_exist
@@ -161,26 +161,6 @@ Otros microservicios nos solicitan validar articulos en el catalogo.
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
 | article_exist | body | Message para article_exist | Yes | [rschema.ConsumeArticleExist](#rschemaconsumearticleexist) |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-
-#### PUT
-##### Summary
-
-Mensage Rabbit article_exist
-
-##### Description
-
-Emite respuestas de article_exist
-
-##### Parameters
-
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ------ |
-| body | body | Estructura general del mensage | Yes | [rschema.SendArticleExist](#rschemasendarticleexist) |
 
 ##### Responses
 
@@ -263,12 +243,6 @@ Cuando se recibe el mensage order_placed damos de baja al stock para reservar lo
 | correlation_id | string | *Example:* `"123123"` | No |
 | message | string | *Example:* `"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg"` | No |
 
-#### engine.ErrorData
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| error | string |  | No |
-
 #### errs.ValidationErr
 
 | Name | Type | Description | Required |
@@ -281,16 +255,6 @@ Cuando se recibe el mensage order_placed damos de baja al stock para reservar lo
 | ---- | ---- | ----------- | -------- |
 | message | string |  | No |
 | path | string |  | No |
-
-#### rschema.ArticleExistMessage
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| articleId | string | *Example:* `"ArticleId"` | No |
-| price | number |  | No |
-| referenceId | string | *Example:* `"Remote Reference Id"` | No |
-| stock | integer |  | No |
-| valid | boolean |  | No |
 
 #### rschema.ConsumeArticleExist
 
@@ -308,12 +272,11 @@ Cuando se recibe el mensage order_placed damos de baja al stock para reservar lo
 | articleId | string | *Example:* `"ArticleId"` | No |
 | referenceId | string | *Example:* `"Remote Reference Object Id"` | No |
 
-#### rschema.SendArticleExist
+#### rst.ErrorData
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| correlation_id | string | *Example:* `"123123"` | No |
-| message | [rschema.ArticleExistMessage](#rschemaarticleexistmessage) |  | No |
+| error | string |  | No |
 
 #### services.ConsumeOrderPlacedArticle
 

@@ -2,7 +2,8 @@ package rest
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/nmarsollier/cataloggo/internal/rest/engine"
+	"github.com/nmarsollier/cataloggo/internal/rest/server"
+	"github.com/nmarsollier/commongo/rst"
 )
 
 //	@Summary		Obtener un articulo
@@ -14,16 +15,16 @@ import (
 //	@Param			articleId		path		string				true	"ID de articlo"
 //	@Success		200				{object}	article.ArticleData	"Articulo"
 //	@Failure		400				{object}	errs.ValidationErr	"Bad Request"
-//	@Failure		401				{object}	engine.ErrorData	"Unauthorized"
-//	@Failure		404				{object}	engine.ErrorData	"Not Found"
-//	@Failure		500				{object}	engine.ErrorData	"Internal Server Error"
+//	@Failure		401				{object}	rst.ErrorData		"Unauthorized"
+//	@Failure		404				{object}	rst.ErrorData		"Not Found"
+//	@Failure		500				{object}	rst.ErrorData		"Internal Server Error"
 //	@Router			/articles/:articleId [get]
 //
 // Obtener un articulo
-func init() {
-	engine.Router().GET(
+func initGetArticles(engine *gin.Engine) {
+	engine.GET(
 		"/articles/:articleId",
-		engine.ValidateAuthentication,
+		server.ValidateAuthentication,
 		getArticle,
 	)
 }
@@ -31,10 +32,10 @@ func init() {
 func getArticle(c *gin.Context) {
 	articleId := c.Param("articleId")
 
-	deps := engine.GinDi(c)
+	deps := server.GinDi(c)
 	result, err := deps.ArticleService().FindById(articleId)
 	if err != nil {
-		engine.AbortWithError(c, err)
+		rst.AbortWithError(c, err)
 		return
 	}
 

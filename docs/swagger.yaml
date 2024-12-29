@@ -51,11 +51,6 @@ definitions:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg
         type: string
     type: object
-  engine.ErrorData:
-    properties:
-      error:
-        type: string
-    type: object
   errs.ValidationErr:
     properties:
       messages:
@@ -69,21 +64,6 @@ definitions:
         type: string
       path:
         type: string
-    type: object
-  rschema.ArticleExistMessage:
-    properties:
-      articleId:
-        example: ArticleId
-        type: string
-      price:
-        type: number
-      referenceId:
-        example: Remote Reference Id
-        type: string
-      stock:
-        type: integer
-      valid:
-        type: boolean
     type: object
   rschema.ConsumeArticleExist:
     properties:
@@ -108,13 +88,10 @@ definitions:
         example: Remote Reference Object Id
         type: string
     type: object
-  rschema.SendArticleExist:
+  rst.ErrorData:
     properties:
-      correlation_id:
-        example: "123123"
+      error:
         type: string
-      message:
-        $ref: '#/definitions/rschema.ArticleExistMessage'
     type: object
   services.ConsumeOrderPlacedArticle:
     properties:
@@ -174,15 +151,15 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
       summary: Crear Artículo
       tags:
       - Catalogo
@@ -214,15 +191,15 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
       summary: Eliminar Artículo
       tags:
       - Catalogo
@@ -255,15 +232,15 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
       summary: Obtener un articulo
       tags:
       - Catalogo
@@ -297,15 +274,15 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
       summary: Actualizar Artículo
       tags:
       - Catalogo
@@ -341,15 +318,15 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/engine.ErrorData'
+            $ref: '#/definitions/rst.ErrorData'
       summary: Obtener un articulo
       tags:
       - Catalogo
@@ -369,23 +346,6 @@ paths:
       - application/json
       responses: {}
       summary: Mensage Rabbit article_exist/article_exist
-      tags:
-      - Rabbit
-    put:
-      consumes:
-      - application/json
-      description: Emite respuestas de article_exist
-      parameters:
-      - description: Estructura general del mensage
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/rschema.SendArticleExist'
-      produces:
-      - application/json
-      responses: {}
-      summary: Mensage Rabbit article_exist
       tags:
       - Rabbit
   /rabbit/logout:

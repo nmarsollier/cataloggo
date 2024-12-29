@@ -65,19 +65,19 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     }
                 }
@@ -128,19 +128,19 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     }
                 }
@@ -191,19 +191,19 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     }
                 }
@@ -249,19 +249,19 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     }
                 }
@@ -315,19 +315,19 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/engine.ErrorData"
+                            "$ref": "#/definitions/rst.ErrorData"
                         }
                     }
                 }
@@ -354,31 +354,6 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/rschema.ConsumeArticleExist"
-                        }
-                    }
-                ],
-                "responses": {}
-            },
-            "put": {
-                "description": "Emite respuestas de article_exist",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Rabbit"
-                ],
-                "summary": "Mensage Rabbit article_exist",
-                "parameters": [
-                    {
-                        "description": "Estructura general del mensage",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/rschema.SendArticleExist"
                         }
                     }
                 ],
@@ -513,14 +488,6 @@ const docTemplate = `{
                 }
             }
         },
-        "engine.ErrorData": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
         "errs.ValidationErr": {
             "type": "object",
             "properties": {
@@ -540,28 +507,6 @@ const docTemplate = `{
                 },
                 "path": {
                     "type": "string"
-                }
-            }
-        },
-        "rschema.ArticleExistMessage": {
-            "type": "object",
-            "properties": {
-                "articleId": {
-                    "type": "string",
-                    "example": "ArticleId"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "referenceId": {
-                    "type": "string",
-                    "example": "Remote Reference Id"
-                },
-                "stock": {
-                    "type": "integer"
-                },
-                "valid": {
-                    "type": "boolean"
                 }
             }
         },
@@ -598,15 +543,11 @@ const docTemplate = `{
                 }
             }
         },
-        "rschema.SendArticleExist": {
+        "rst.ErrorData": {
             "type": "object",
             "properties": {
-                "correlation_id": {
-                    "type": "string",
-                    "example": "123123"
-                },
-                "message": {
-                    "$ref": "#/definitions/rschema.ArticleExistMessage"
+                "error": {
+                    "type": "string"
                 }
             }
         },

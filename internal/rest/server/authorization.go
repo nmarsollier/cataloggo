@@ -1,12 +1,12 @@
-package engine
+package server
 
 import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nmarsollier/cataloggo/internal/engine/errs"
-	"github.com/nmarsollier/cataloggo/internal/engine/log"
-	"github.com/nmarsollier/cataloggo/internal/security"
+	"github.com/nmarsollier/commongo/errs"
+	"github.com/nmarsollier/commongo/log"
+	"github.com/nmarsollier/commongo/security"
 )
 
 // ValidateAuthentication validate gets and check variable body to create new variable

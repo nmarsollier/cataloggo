@@ -3,9 +3,9 @@ package consume
 import (
 	"encoding/json"
 
-	"github.com/nmarsollier/cataloggo/internal/engine/log"
 	"github.com/nmarsollier/cataloggo/internal/rabbit/rschema"
 	"github.com/nmarsollier/cataloggo/internal/services"
+	"github.com/nmarsollier/commongo/log"
 
 	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
@@ -16,7 +16,7 @@ type ArticleExistConsumer interface {
 }
 
 func NewArticleExistConsumer(fluentUrl string, rabbitUrl string, service services.CatalogService) ArticleExistConsumer {
-	log := log.Get(fluentUrl).
+	log := log.Get(fluentUrl, "cataloggo").
 		WithField(log.LOG_FIELD_CONTROLLER, "Rabbit").
 		WithField(log.LOG_FIELD_RABBIT_EXCHANGE, "article_exist").
 		WithField(log.LOG_FIELD_RABBIT_QUEUE, "catalog_article_exist").

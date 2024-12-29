@@ -3,9 +3,9 @@ package article
 import (
 	"context"
 
-	"github.com/nmarsollier/cataloggo/internal/engine/db"
-	"github.com/nmarsollier/cataloggo/internal/engine/errs"
-	"github.com/nmarsollier/cataloggo/internal/engine/log"
+	"github.com/nmarsollier/commongo/db"
+	"github.com/nmarsollier/commongo/errs"
+	"github.com/nmarsollier/commongo/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

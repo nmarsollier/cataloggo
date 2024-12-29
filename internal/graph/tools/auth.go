@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/nmarsollier/cataloggo/internal/engine/errs"
-	"github.com/nmarsollier/cataloggo/internal/security"
+	"github.com/nmarsollier/commongo/errs"
+	"github.com/nmarsollier/commongo/security"
 )
 
 func ValidateLoggedIn(ctx context.Context) (*security.User, error) {

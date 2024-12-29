@@ -1,5 +1,9 @@
 package rschema
 
+import "github.com/nmarsollier/commongo/rbt"
+
+type ArticleExistPublisher = rbt.RabbitPublisher[*ArticleExistMessage]
+
 type ArticleExistMessage struct {
 	ArticleId   string  `json:"articleId" example:"ArticleId" `
 	Price       float32 `json:"price"`

@@ -3,7 +3,7 @@ package article
 import (
 	"time"
 
-	"github.com/nmarsollier/cataloggo/internal/engine/log"
+	"github.com/nmarsollier/commongo/log"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

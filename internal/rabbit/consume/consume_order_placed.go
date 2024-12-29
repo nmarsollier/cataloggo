@@ -3,9 +3,9 @@ package consume
 import (
 	"encoding/json"
 
-	"github.com/nmarsollier/cataloggo/internal/engine/env"
-	"github.com/nmarsollier/cataloggo/internal/engine/log"
+	"github.com/nmarsollier/cataloggo/internal/env"
 	"github.com/nmarsollier/cataloggo/internal/services"
+	"github.com/nmarsollier/commongo/log"
 	uuid "github.com/satori/go.uuid"
 	"github.com/streadway/amqp"
 )
@@ -15,7 +15,7 @@ type OrderPlacedConsumer interface {
 }
 
 func NewOrderPlacedConsumer(fluentUrl string, rabbitUrl string, service services.CatalogService) OrderPlacedConsumer {
-	logger := log.Get(fluentUrl).
+	logger := log.Get(fluentUrl, "cataloggo").
 		WithField(log.LOG_FIELD_CONTROLLER, "Rabbit").
 		WithField(log.LOG_FIELD_RABBIT_EXCHANGE, "order_placed").
 		WithField(log.LOG_FIELD_RABBIT_QUEUE, "catalog_order_placed").

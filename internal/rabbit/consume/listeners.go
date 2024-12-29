@@ -3,7 +3,7 @@ package consume
 import (
 	"time"
 
-	"github.com/nmarsollier/cataloggo/internal/engine/log"
+	"github.com/nmarsollier/commongo/log"
 )
 
 func Init(logger log.LogRusEntry, articleExistConsumer ArticleExistConsumer, logoutConsumer LogoutConsumer, orderPlacedConsumer OrderPlacedConsumer) {
