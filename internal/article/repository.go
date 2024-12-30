@@ -126,6 +126,7 @@ func (r *articleRepository) Disable(articleId string) error {
 				Enabled: false,
 			},
 		},
+		nil,
 	)
 
 	return err
@@ -154,6 +155,7 @@ func (r *articleRepository) UpdateDescription(articleId string, description Desc
 				Description: description,
 			},
 		},
+		nil,
 	)
 
 	return err
@@ -182,6 +184,7 @@ func (r *articleRepository) UpdatePrice(articleId string, price float32) error {
 				Price: price,
 			},
 		},
+		nil,
 	)
 
 	return err
@@ -210,6 +213,7 @@ func (r *articleRepository) UpdateStock(articleId string, stock int) error {
 				Stock: stock,
 			},
 		},
+		nil,
 	)
 	if err != nil {
 		r.log.Error(err)
@@ -229,6 +233,7 @@ func (r *articleRepository) DecrementStock(articleId primitive.ObjectID, amount 
 			"$inc": bson.M{
 				"stock": -amount,
 			}},
+		nil,
 	)
 
 	if err != nil {
