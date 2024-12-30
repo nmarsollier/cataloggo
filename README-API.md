@@ -182,7 +182,7 @@ Escucha de mensajes logout desde auth.
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| body | body | Estructura general del mensage | Yes | [consume.logoutMessage](#consumelogoutmessage) |
+| body | body | Estructura general del mensage | Yes | [rbt.InputMessage-string](#rbtinputmessage-string) |
 
 ##### Responses
 
@@ -204,7 +204,7 @@ Cuando se recibe el mensage order_placed damos de baja al stock para reservar lo
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| order_placed | body | Message order_placed | Yes | [services.ConsumeOrderPlacedMessage](#servicesconsumeorderplacedmessage) |
+| order_placed | body | Message order_placed | Yes | [rschema.ConsumeOrderPlacedMessage](#rschemaconsumeorderplacedmessage) |
 
 ##### Responses
 
@@ -236,13 +236,6 @@ Cuando se recibe el mensage order_placed damos de baja al stock para reservar lo
 | price | number |  | Yes |
 | stock | integer |  | Yes |
 
-#### consume.logoutMessage
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| correlation_id | string | *Example:* `"123123"` | No |
-| message | string | *Example:* `"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg"` | No |
-
 #### errs.ValidationErr
 
 | Name | Type | Description | Required |
@@ -255,6 +248,15 @@ Cuando se recibe el mensage order_placed damos de baja al stock para reservar lo
 | ---- | ---- | ----------- | -------- |
 | message | string |  | No |
 | path | string |  | No |
+
+#### rbt.InputMessage-string
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| correlation_id | string | *Example:* `"123123"` | No |
+| exchange | string | *Example:* `"Remote Exchange to Reply"` | No |
+| message | string |  | No |
+| routing_key | string | *Example:* `"Remote RoutingKey to Reply"` | No |
 
 #### rschema.ConsumeArticleExist
 
@@ -272,23 +274,23 @@ Cuando se recibe el mensage order_placed damos de baja al stock para reservar lo
 | articleId | string | *Example:* `"ArticleId"` | No |
 | referenceId | string | *Example:* `"Remote Reference Object Id"` | No |
 
-#### rst.ErrorData
-
-| Name | Type | Description | Required |
-| ---- | ---- | ----------- | -------- |
-| error | string |  | No |
-
-#### services.ConsumeOrderPlacedArticle
+#### rschema.ConsumeOrderPlacedArticle
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
 | articleId | string |  | No |
 | quantity | integer |  | No |
 
-#### services.ConsumeOrderPlacedMessage
+#### rschema.ConsumeOrderPlacedMessage
 
 | Name | Type | Description | Required |
 | ---- | ---- | ----------- | -------- |
-| articles | [ [services.ConsumeOrderPlacedArticle](#servicesconsumeorderplacedarticle) ] |  | No |
+| articles | [ [rschema.ConsumeOrderPlacedArticle](#rschemaconsumeorderplacedarticle) ] |  | No |
 | cartId | string |  | No |
 | orderId | string |  | No |
+
+#### rst.ErrorData
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| error | string |  | No |

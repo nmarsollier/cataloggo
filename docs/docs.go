@@ -380,7 +380,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/consume.logoutMessage"
+                            "$ref": "#/definitions/rbt.InputMessage-string"
                         }
                     }
                 ],
@@ -407,7 +407,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/services.ConsumeOrderPlacedMessage"
+                            "$ref": "#/definitions/rschema.ConsumeOrderPlacedMessage"
                         }
                     }
                 ],
@@ -475,19 +475,6 @@ const docTemplate = `{
                 }
             }
         },
-        "consume.logoutMessage": {
-            "type": "object",
-            "properties": {
-                "correlation_id": {
-                    "type": "string",
-                    "example": "123123"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg"
-                }
-            }
-        },
         "errs.ValidationErr": {
             "type": "object",
             "properties": {
@@ -507,6 +494,26 @@ const docTemplate = `{
                 },
                 "path": {
                     "type": "string"
+                }
+            }
+        },
+        "rbt.InputMessage-string": {
+            "type": "object",
+            "properties": {
+                "correlation_id": {
+                    "type": "string",
+                    "example": "123123"
+                },
+                "exchange": {
+                    "type": "string",
+                    "example": "Remote Exchange to Reply"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "routing_key": {
+                    "type": "string",
+                    "example": "Remote RoutingKey to Reply"
                 }
             }
         },
@@ -543,15 +550,7 @@ const docTemplate = `{
                 }
             }
         },
-        "rst.ErrorData": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "services.ConsumeOrderPlacedArticle": {
+        "rschema.ConsumeOrderPlacedArticle": {
             "type": "object",
             "properties": {
                 "articleId": {
@@ -562,19 +561,27 @@ const docTemplate = `{
                 }
             }
         },
-        "services.ConsumeOrderPlacedMessage": {
+        "rschema.ConsumeOrderPlacedMessage": {
             "type": "object",
             "properties": {
                 "articles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/services.ConsumeOrderPlacedArticle"
+                        "$ref": "#/definitions/rschema.ConsumeOrderPlacedArticle"
                     }
                 },
                 "cartId": {
                     "type": "string"
                 },
                 "orderId": {
+                    "type": "string"
+                }
+            }
+        },
+        "rst.ErrorData": {
+            "type": "object",
+            "properties": {
+                "error": {
                     "type": "string"
                 }
             }

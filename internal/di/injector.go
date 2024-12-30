@@ -3,9 +3,7 @@ package di
 import (
 	"github.com/nmarsollier/cataloggo/internal/article"
 	"github.com/nmarsollier/cataloggo/internal/env"
-	"github.com/nmarsollier/cataloggo/internal/rabbit/consume"
 	"github.com/nmarsollier/cataloggo/internal/rabbit/rschema"
-	"github.com/nmarsollier/cataloggo/internal/services"
 	"github.com/nmarsollier/commongo/db"
 	"github.com/nmarsollier/commongo/httpx"
 	"github.com/nmarsollier/commongo/log"
@@ -19,10 +17,6 @@ import (
 var database *mongo.Database
 var httpClient httpx.HTTPClient
 var catalogCollection db.Collection
-var articleConsumer consume.ArticleExistConsumer
-var logoutConsumer consume.LogoutConsumer
-var orderPlacedConsumer consume.OrderPlacedConsumer
-var catalogService services.CatalogService
 
 type Injector interface {
 	Logger() log.LogRusEntry
@@ -33,10 +27,6 @@ type Injector interface {
 	CatalogCollection() db.Collection
 	ArticleRepository() article.ArticleRepository
 	ArticleService() article.ArticleService
-	ArticleExistConsumer() consume.ArticleExistConsumer
-	LogoutConsumer() consume.LogoutConsumer
-	OrderPlacedConsumer() consume.OrderPlacedConsumer
-	CatalogService() services.CatalogService
 	ArticleExistPublisher() rschema.ArticleExistPublisher
 }
 
@@ -49,10 +39,6 @@ type Deps struct {
 	CurrCatalogColl       db.Collection
 	CurrArticleRepository article.ArticleRepository
 	CurrArticleService    article.ArticleService
-	CurrArticleConsumer   consume.ArticleExistConsumer
-	CurrLogoutConsumer    consume.LogoutConsumer
-	CurrOrderPlaced       consume.OrderPlacedConsumer
-	CurrCatalogServices   services.CatalogService
 	CurrArtExistPublisher rschema.ArticleExistPublisher
 }
 
@@ -147,50 +133,6 @@ func (i *Deps) ArticleService() article.ArticleService {
 	return i.CurrArticleService
 }
 
-func (i *Deps) ArticleExistConsumer() consume.ArticleExistConsumer {
-	if i.CurrArticleConsumer != nil {
-		return i.CurrArticleConsumer
-	}
-	if articleConsumer != nil {
-		return articleConsumer
-	}
-	articleConsumer = consume.NewArticleExistConsumer(env.Get().FluentUrl, env.Get().RabbitURL, i.CatalogService())
-	return articleConsumer
-}
-
-func (i *Deps) LogoutConsumer() consume.LogoutConsumer {
-	if i.CurrLogoutConsumer != nil {
-		return i.CurrLogoutConsumer
-	}
-	if logoutConsumer != nil {
-		return logoutConsumer
-	}
-	logoutConsumer = consume.NewLogoutConsumer(env.Get().FluentUrl, env.Get().RabbitURL, i.SecurityService())
-	return logoutConsumer
-}
-
-func (i *Deps) OrderPlacedConsumer() consume.OrderPlacedConsumer {
-	if i.CurrOrderPlaced != nil {
-		return i.CurrOrderPlaced
-	}
-	if orderPlacedConsumer != nil {
-		return orderPlacedConsumer
-	}
-	orderPlacedConsumer = consume.NewOrderPlacedConsumer(env.Get().FluentUrl, env.Get().RabbitURL, i.CatalogService())
-	return orderPlacedConsumer
-}
-
-func (i *Deps) CatalogService() services.CatalogService {
-	if i.CurrCatalogServices != nil {
-		return i.CurrCatalogServices
-	}
-	if catalogService != nil {
-		return catalogService
-	}
-	catalogService = services.NewCatalogService(i.Logger(), i.ArticleService(), i.ArticleExistPublisher())
-	return catalogService
-}
-
 // IsDbTimeoutError función a llamar cuando se produce un error de db
 func IsDbTimeoutError(err error) {
 	if err == topology.ErrServerSelectionTimeout {
@@ -204,13 +146,8 @@ func (i *Deps) ArticleExistPublisher() rschema.ArticleExistPublisher {
 		return i.CurrArtExistPublisher
 	}
 
-	logger := i.Logger().
-		WithField(log.LOG_FIELD_CONTROLLER, "Rabbit").
-		WithField(log.LOG_FIELD_RABBIT_ACTION, "Emit").
-		WithField(log.LOG_FIELD_RABBIT_EXCHANGE, "article_exist")
-
 	i.CurrArtExistPublisher, _ = rbt.NewRabbitPublisher[*rschema.ArticleExistMessage](
-		logger,
+		rbt.RbtLogger(env.Get().FluentURL, "cataloggo", i.Logger().CorrelationId()),
 		env.Get().RabbitURL,
 		"",
 		"direct",

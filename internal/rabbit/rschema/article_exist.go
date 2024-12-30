@@ -17,14 +17,22 @@ type SendArticleExist struct {
 	Message       ArticleExistMessage `json:"message"`
 }
 
-type ConsumeArticleExist struct {
-	CorrelationId string `json:"correlation_id" example:"123123" `
-	RoutingKey    string `json:"routing_key" example:"Remote RoutingKey to Reply"`
-	Exchange      string `json:"exchange" example:"Remote Exchange to Reply"`
-	Message       *ConsumeArticleExistMessage
-}
+type ConsumeArticleExist = rbt.InputMessage[ConsumeArticleExistMessage]
 
 type ConsumeArticleExistMessage struct {
 	ReferenceId string `json:"referenceId" example:"Remote Reference Object Id"`
 	ArticleId   string `json:"articleId" example:"ArticleId"`
+}
+
+type ConsumeOrderPlaced = rbt.InputMessage[ConsumeOrderPlacedMessage]
+
+type ConsumeOrderPlacedMessage struct {
+	OrderId  string                       `json:"orderId"`
+	CartId   string                       `json:"cartId"`
+	Articles []*ConsumeOrderPlacedArticle `json:"articles"`
+}
+
+type ConsumeOrderPlacedArticle struct {
+	ArticleId string `json:"articleId"`
+	Quantity  int    `json:"quantity"`
 }

@@ -4,7 +4,7 @@ import (
 	"github.com/nmarsollier/cataloggo/internal/di"
 	"github.com/nmarsollier/cataloggo/internal/env"
 	"github.com/nmarsollier/cataloggo/internal/graph"
-	"github.com/nmarsollier/cataloggo/internal/rabbit/consume"
+	"github.com/nmarsollier/cataloggo/internal/rabbit"
 	"github.com/nmarsollier/cataloggo/internal/rest"
 	"github.com/nmarsollier/commongo/log"
 )
@@ -20,9 +20,9 @@ import (
 //
 // Main Method
 func main() {
-	deps := di.NewInjector(log.Get(env.Get().FluentUrl, "cataloggo"))
+	deps := di.NewInjector(log.Get(env.Get().FluentURL, "cataloggo"))
 
 	go graph.Start(deps.Logger())
-	consume.Init(deps.Logger(), deps.ArticleExistConsumer(), deps.LogoutConsumer(), deps.OrderPlacedConsumer())
+	rabbit.Init(deps.Logger())
 	rest.Start()
 }

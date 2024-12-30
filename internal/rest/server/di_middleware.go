@@ -14,7 +14,7 @@ func DiInjectorMiddleware() gin.HandlerFunc {
 		dep_param, exists := c.Get("di")
 
 		if !exists {
-			logger := rst.GinLogger(c, env.Get().FluentUrl, "cataloggo")
+			logger := rst.GinLogger(c, env.Get().FluentURL, "cataloggo")
 			deps = di.NewInjector(logger)
 			c.Set("di", deps)
 		} else {

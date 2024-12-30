@@ -42,15 +42,6 @@ definitions:
     - price
     - stock
     type: object
-  consume.logoutMessage:
-    properties:
-      correlation_id:
-        example: "123123"
-        type: string
-      message:
-        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbklEIjoiNjZiNjBlYzhlMGYzYzY4OTUzMzJlOWNmIiwidXNlcklEIjoiNjZhZmQ3ZWU4YTBhYjRjZjQ0YTQ3NDcyIn0.who7upBctOpmlVmTvOgH1qFKOHKXmuQCkEjMV3qeySg
-        type: string
-    type: object
   errs.ValidationErr:
     properties:
       messages:
@@ -63,6 +54,20 @@ definitions:
       message:
         type: string
       path:
+        type: string
+    type: object
+  rbt.InputMessage-string:
+    properties:
+      correlation_id:
+        example: "123123"
+        type: string
+      exchange:
+        example: Remote Exchange to Reply
+        type: string
+      message:
+        type: string
+      routing_key:
+        example: Remote RoutingKey to Reply
         type: string
     type: object
   rschema.ConsumeArticleExist:
@@ -88,27 +93,27 @@ definitions:
         example: Remote Reference Object Id
         type: string
     type: object
-  rst.ErrorData:
-    properties:
-      error:
-        type: string
-    type: object
-  services.ConsumeOrderPlacedArticle:
+  rschema.ConsumeOrderPlacedArticle:
     properties:
       articleId:
         type: string
       quantity:
         type: integer
     type: object
-  services.ConsumeOrderPlacedMessage:
+  rschema.ConsumeOrderPlacedMessage:
     properties:
       articles:
         items:
-          $ref: '#/definitions/services.ConsumeOrderPlacedArticle'
+          $ref: '#/definitions/rschema.ConsumeOrderPlacedArticle'
         type: array
       cartId:
         type: string
       orderId:
+        type: string
+    type: object
+  rst.ErrorData:
+    properties:
+      error:
         type: string
     type: object
 host: localhost:3002
@@ -359,7 +364,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/consume.logoutMessage'
+          $ref: '#/definitions/rbt.InputMessage-string'
       produces:
       - application/json
       responses: {}
@@ -379,7 +384,7 @@ paths:
         name: order_placed
         required: true
         schema:
-          $ref: '#/definitions/services.ConsumeOrderPlacedMessage'
+          $ref: '#/definitions/rschema.ConsumeOrderPlacedMessage'
       produces:
       - application/json
       responses: {}
